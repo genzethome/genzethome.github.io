@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laporan Keuangan - GENZET HOME</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet"/>
+  <style>
+    body { background-color: #f8f9fa; }
+    .progress { height: 20px; }
+    .progress-bar { font-size: 0; transition: width 0.8s ease; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar pakai Web Components -->
+  <my-navbar></my-navbar>
+
+  <div class="container mb-5">
+    <h4 class="mb-4 text-center"><i class="fa-solid fa-chart-bar"></i> Laporan Keuangan</h4>
+
+    <div class="mb-3 text-end">
+      <button class="btn btn-secondary" id="refreshBtn"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+
+    <div class="row g-3 mb-4 text-center">
+      <div class="col-md-4">
+        <div class="p-3 border rounded bg-success text-white">
+          <h6>Total Pemasukan</h6>
+          <h5 id="totalPemasukan">Rp 0</h5>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 border rounded bg-danger text-white">
+          <h6>Total Pengeluaran</h6>
+          <h5 id="totalPengeluaran">Rp 0</h5>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 border rounded bg-primary text-white">
+          <h6>Saldo Akhir</h6>
+          <h5 id="saldoAkhir">Rp 0</h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white"><i class="fa-solid fa-chart-bar"></i> Perbandingan Saldo</div>
+      <div class="card-body">
+        <div class="mb-2"><small>Pemasukan</small></div>
+        <div class="progress mb-3"><div id="progressPemasukan" class="progress-bar bg-success" style="width: 0%;"></div></div>
+        <div class="mb-2"><small>Pengeluaran</small></div>
+        <div class="progress mb-3"><div id="progressPengeluaran" class="progress-bar bg-danger" style="width: 0%;"></div></div>
+        <div class="mb-2"><small>Saldo</small></div>
+        <div class="progress"><div id="progressSaldo" class="progress-bar bg-primary" style="width: 0%;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxjTmRPiF4OrRAsneB_SUi1SpGOgkwrYg",
+      authDomain: "genzet-home.firebaseapp.com",
+      projectId: "genzet-home",
+      storageBucket: "genzet-home.appspot.com",
+      messagingSenderId: "586231239859",
+      appId: "1:586231239859:web:9fc3a69f2f2ef0bf8c8cc6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    let totalPemasukan = 0;
+    let totalPengeluaran = 0;
+    let saldo = 0;
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) window.location.href = "login.html";
+      else refreshLaporan();
+    });
+
+    async function refreshLaporan() {
+      totalPemasukan = 0;
+      totalPengeluaran = 0;
+
+      const pemasukanSnap = await getDocs(collection(db, "pemasukan"));
+      pemasukanSnap.forEach(doc => totalPemasukan += parseInt(doc.data().jumlah || 0));
+
+      const pengeluaranSnap = await getDocs(collection(db, "pengeluaran"));
+      pengeluaranSnap.forEach(doc => totalPengeluaran += parseInt(doc.data().jumlah || 0));
+
+      saldo = totalPemasukan - totalPengeluaran;
+
+      animateNumber("totalPemasukan", totalPemasukan);
+      animateNumber("totalPengeluaran", totalPengeluaran);
+      animateNumber("saldoAkhir", saldo);
+
+      tampilkanProgress(totalPemasukan, totalPengeluaran, saldo);
+    }
+
+    function tampilkanProgress(pemasukan, pengeluaran, saldo) {
+      const total = pemasukan + pengeluaran + Math.abs(saldo);
+      const persenPemasukan = pemasukan > 0 ? Math.round((pemasukan / total) * 100) : 0;
+      const persenPengeluaran = pengeluaran > 0 ? Math.round((pengeluaran / total) * 100) : 0;
+      const persenSaldo = saldo > 0 ? Math.round((saldo / total) * 100) : 0;
+
+      document.getElementById("progressPemasukan").style.width = "0%";
+      document.getElementById("progressPengeluaran").style.width = "0%";
+      document.getElementById("progressSaldo").style.width = "0%";
+
+      setTimeout(() => {
+        document.getElementById("progressPemasukan").style.width = persenPemasukan + "%";
+        document.getElementById("progressPengeluaran").style.width = persenPengeluaran + "%";
+        document.getElementById("progressSaldo").style.width = persenSaldo + "%";
+      }, 100);
+    }
+
+    function animateNumber(elementId, targetValue) {
+      const el = document.getElementById(elementId);
+      let start = 0;
+      const duration = 500;
+      const startTime = performance.now();
+
+      function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const value = Math.floor(progress * targetValue);
+        el.textContent = "Rp " + value.toLocaleString();
+        if (progress < 1) requestAnimationFrame(updateNumber);
+      }
+      requestAnimationFrame(updateNumber);
+    }
+
+    document.getElementById("refreshBtn").addEventListener("click", refreshLaporan);
+
+    // Web Component Navbar
+    class MyNavbar extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = `
+          <nav class="navbar navbar-expand-lg navbar-light mb-4 border-bottom border-secondary-subtle">
+            <div class="container-fluid">
+              <a class="navbar-brand fw-bold" href="#">GENZET HOME</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                  <li class="nav-item"><a href="/cpanel.html" class="nav-link text-dark"><i class="fa-solid fa-chart-line"></i> Laporan</a></li>
+                  <li class="nav-item"><a href="/pemasukan.html" class="nav-link text-dark"><i class="fa-solid fa-wallet"></i> Pemasukan</a></li>
+                  <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark"><i class="fa-solid fa-money-bill-wave"></i> Pengeluaran</a></li>
+                  <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link text-dark"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        `;
+
+        setTimeout(() => {
+          const logoutBtn = this.querySelector("#logoutBtn");
+          if (logoutBtn) {
+            logoutBtn.addEventListener("click", (e) => {
+              e.preventDefault();
+              logout();
+            });
+          }
+        }, 0);
+      }
+    }
+
+    customElements.define('my-navbar', MyNavbar);
+
+    // Fungsi Logout global
+    window.logout = async function () {
+      const result = await Swal.fire({
+        title: "Keluar dari akun?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Logout",
+        cancelButtonText: "Batal"
+      });
+      if (result.isConfirmed) {
+        await signOut(auth);
+        Swal.fire("Logout berhasil", "", "success").then(() => window.location.href = "login.html");
+      }
+    }
+  </script>
+</body>
+</html>
