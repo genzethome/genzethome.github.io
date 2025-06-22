@@ -138,7 +138,7 @@
     const kuantitas = parseInt(document.getElementById("kuantitas").value.trim());
     const jumlah = parseInt(document.getElementById("jumlah").value.trim());
     const now = new Date();
-    const tanggal = `${String(now.getDate()).padStart(2, "0")}-${String(now.getMonth()+1).padStart(2, "0")}-${String(now.getFullYear()).slice(-2)} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+    const tanggal = `${String(now.getDate()).padStart(2, "0")}-${String(now.getMonth()+1).padStart(2, "0")}-${now.getFullYear()} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
     const uploader = auth.currentUser?.email || "-";
     await addDoc(collection(db, "pemasukan"), { keterangan, kuantitas, jumlah, tanggal, uploader });
     e.target.reset();
@@ -189,14 +189,14 @@
       } else if (col === "tanggal") {
         Swal.fire({
           title: "Filter Tanggal & Waktu (Detik)",
-          html: `<input id="tgl1" class="swal2-input" placeholder="DDMMYYHHMMSS"><input id="tgl2" class="swal2-input" placeholder="Opsional DDMMYYHHMMSS">`,
+          html: `<input id="tgl1" class="swal2-input" placeholder="DDMMYYYYHHMMSS"><input id="tgl2" class="swal2-input" placeholder="Opsional DDMMYYYYHHMMSS">`,
           showCancelButton: true,
           confirmButtonText: "Filter"
         }).then(res => {
           if (res.isConfirmed) {
             let t1 = document.getElementById("tgl1").value.replace(/\D/g, "");
             let t2 = document.getElementById("tgl2").value.replace(/\D/g, "");
-            const toFormat = str => `${str.slice(0,2)}-${str.slice(2,4)}-${str.slice(4,6)} ${str.slice(6,8)}:${str.slice(8,10)}:${str.slice(10,12)}`;
+            const toFormat = str => `${str.slice(0,2)}-${str.slice(2,4)}-${str.slice(4,8)} ${str.slice(8,10)}:${str.slice(10,12)}:${str.slice(12,14)}`;
             if (t1) t1 = toFormat(t1);
             if (t2) t2 = toFormat(t2);
             filteredData = [...dataSemua];
@@ -216,7 +216,6 @@
 
   loadData();
 
-  // Web Component: Navbar
   class MyNavbar extends HTMLElement {
     connectedCallback() {
       this.innerHTML = `
