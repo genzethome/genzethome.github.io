@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Pelanggan Wifi - GENZET HOME</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .main-content {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      background: #fff;
+      border-radius: .5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .small-textarea {
+      resize: none;
+      overflow: auto;
+      height: 2.2em;
+      font-size: 0.85rem;
+      background-color: #f8f9fa;
+      border-color: #ced4da;
+      cursor: default;
+      scrollbar-width: none;
+    }
+
+    .small-textarea::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <my-navbar></my-navbar>
+
+  <div class="main-content">
+    <h4 class="text-center mb-4 fs-5"><i class="fa-solid fa-users"></i> Data Pelanggan Wifi</h4>
+
+    <div class="card mb-4">
+      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <div><i class="fa-solid fa-users"></i> Daftar Pelanggan</div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center">
+          <thead class="table-light text-nowrap">
+            <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>Paket</th>
+              <th>Alamat</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="pelangganTable">
+            <tr>
+              <td colspan="5">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxjTmRPiF4OrRAsneB_SUi1SpGOgkwrYg",
+      authDomain: "genzet-home.firebaseapp.com",
+      projectId: "genzet-home",
+      storageBucket: "genzet-home.appspot.com",
+      messagingSenderId: "586231239859",
+      appId: "1:586231239859:web:9fc3a69f2f2ef0bf8c8cc6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) window.location.href = "login.html";
+      else loadPelanggan();
+    });
+
+    window.logout = async function () {
+      const result = await Swal.fire({
+        title: "Keluar dari akun?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Logout"
+      });
+      if (result.isConfirmed) {
+        await signOut(auth);
+        Swal.fire("Logout berhasil", "", "success").then(() => window.location.href = "login.html");
+      }
+    };
+
+    class MyNavbar extends HTMLElement {
+      connectedCallback() {
+        this.innerHTML = `
+          <nav class="navbar navbar-expand-lg navbar-light mb-4 border-bottom border-secondary-subtle">
+            <div class="container-fluid">
+              <a class="navbar-brand fw-bold" href="#">GENZET HOME</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                  <li class="nav-item"><a href="/cpanel.html" class="nav-link text-dark"><i class="fa-solid fa-chart-line"></i> Laporan</a></li>
+                  <li class="nav-item"><a href="/pemasukan.html" class="nav-link text-dark"><i class="fa-solid fa-wallet"></i> Pemasukan</a></li>
+                  <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark"><i class="fa-solid fa-money-bill-wave"></i> Pengeluaran</a></li>
+                  <li class="nav-item"><a href="/assets.html" class="nav-link text-dark"><i class="fa-solid fa-box-archive"></i> Assets</a></li>
+                  <li class="nav-item"><a href="/form.html" class="nav-link text-dark"><i class="fa-solid fa-file-lines"></i> Formulir</a></li>
+                  <li class="nav-item"><a href="/approval.html" class="nav-link text-dark"><i class="fa-solid fa-circle-check"></i> Approval</a></li>
+                  <li class="nav-item"><a href="/pelanggan.html" class="nav-link text-dark"><i class="fa-solid fa-users"></i> Pelanggan</a></li>
+                  <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link text-dark"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                </ul>
+              </div>
+            </div>
+          </nav>`;
+        this.querySelector("#logoutBtn")?.addEventListener("click", (e) => { e.preventDefault(); logout(); });
+      }
+    }
+
+    customElements.define('my-navbar', MyNavbar);
+
+    async function loadPelanggan() {
+      const tbody = document.getElementById("pelangganTable");
+      tbody.innerHTML = "";
+      const snapshot = await getDocs(collection(db, "pelanggan"));
+
+      if (snapshot.empty) {
+        tbody.innerHTML = `<tr><td colspan="5">Belum ada data pelanggan.</td></tr>`;
+        return;
+      }
+
+      let no = 1;
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const alamatLengkap = `${data.alamat}, RT ${data.rt}/RW ${data.rw}, ${data.kelurahan}, ${data.kecamatan}, ${data.kabupaten}, ${data.provinsi}, ${data.kodepos}`;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${no++}</td>
+          <td>${data.nama}</td>
+          <td><span class="badge bg-success">${data.paket}</span></td>
+          <td><textarea class="form-control small-textarea" readonly>${alamatLengkap}</textarea></td>
+          <td>
+            <button class="btn btn-danger btn-sm" onclick="hapusPelanggan('${docSnap.id}')" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.hapusPelanggan = async function (id) {
+      const confirm = await Swal.fire({
+        title: 'Hapus pelanggan?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Hapus'
+      });
+      if (confirm.isConfirmed) {
+        await deleteDoc(doc(db, "pelanggan", id));
+        Swal.fire("Dihapus!", "Data pelanggan berhasil dihapus.", "success");
+        loadPelanggan();
+      }
+    };
+
+  </script>
+</body>
+
+</html>
