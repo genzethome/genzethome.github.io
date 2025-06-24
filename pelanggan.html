@@ -96,13 +96,11 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    // Auth Check
     onAuthStateChanged(auth, (user) => {
       if (!user) window.location.href = "login.html";
       else loadPelanggan();
     });
 
-    // Logout Function
     window.logout = async function () {
       const result = await Swal.fire({
         title: "Keluar dari akun?",
@@ -117,7 +115,6 @@
       }
     };
 
-    // Load Pelanggan
     async function loadPelanggan() {
       const tbody = document.getElementById("pelangganTable");
       tbody.innerHTML = "";
@@ -139,7 +136,7 @@
           <td><span class="badge bg-success">${data.paket}</span></td>
           <td><textarea class="form-control small-textarea" readonly>${alamatLengkap}</textarea></td>
           <td class="text-nowrap">
-            <button class="btn btn-primary btn-sm me-1" onclick="generateInvoice('${data.nama}', '${data.paket}', \`${alamatLengkap}\`, '${data.invoice || '00000'}')"><i class="fa-solid fa-file-pdf"></i></button>
+            <button class="btn btn-primary btn-sm me-1" onclick="generateInvoice('${data.nama.toUpperCase()}', '${data.paket}', \`${alamatLengkap}\`, '${data.kode_pelanggan}', ${data.nominal}, '${data.tglPemasangan}')"><i class="fa-solid fa-file-pdf"></i></button>
             <button class="btn btn-danger btn-sm" onclick="hapusPelanggan('${docSnap.id}')"><i class="fa-solid fa-trash"></i></button>
           </td>
         `;
@@ -147,7 +144,6 @@
       });
     }
 
-    // Delete Pelanggan
     window.hapusPelanggan = async function (id) {
       const confirm = await Swal.fire({
         title: 'Hapus pelanggan?',
@@ -162,63 +158,88 @@
       }
     };
 
-    // Generate Invoice PDF
-    window.generateInvoice = async function (nama, paket, alamat, invoiceNumber) {
-      const periode = new Date().toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-      const nominal = 150000;
+    window.generateInvoice = async function (nama, paket, alamat, kodePelanggan, nominal, tglPemasangan) {
+      const periodeNow = new Date();
+      const periodeStr = periodeNow.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
 
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+      const pemasanganDate = new Date(tglPemasangan);
+      const pemasanganMonthYear = (pemasanganDate.getMonth() + 1).toString().padStart(2, '0') + pemasanganDate.getFullYear();
+      const invoiceMonthYear = (periodeNow.getMonth() + 1).toString().padStart(2, '0') + periodeNow.getFullYear();
 
-      doc.setFillColor(0, 51, 153);
-      doc.rect(0, 0, 210, 40, 'F');
-      doc.setFontSize(22);
-      doc.setTextColor(255, 255, 255);
-      doc.text("GENZET HOME", 14, 15);
-      doc.setFontSize(12);
-      doc.text(`NO: ${invoiceNumber}`, 160, 15);
+      const noInvoice = `INV-${kodePelanggan}${invoiceMonthYear}`;
 
-      doc.setTextColor(0, 0, 0);
-      doc.setFontSize(12);
-      doc.text("Bill To:", 14, 50);
-      doc.text(nama, 14, 58);
-      const alamatSplit = doc.splitTextToSize(alamat, 80);
-      doc.text(alamatSplit, 14, 65);
+      Swal.fire({
+        title: 'Memproses Invoice...',
+        html: '<div class="d-flex justify-content-center"><div class="spinner-border text-primary" role="status"></div></div>',
+        timer: 800,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willClose: () => {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
 
-      doc.text("From:", 130, 50);
-      doc.text("GENZET HOME", 130, 58);
-      doc.text("Jl. Bambu Apus, Jakarta Timur", 130, 65);
+          doc.setFillColor(0, 51, 153);
+          doc.rect(0, 0, 210, 20, 'F');
+          doc.setFontSize(16);
+          doc.setTextColor(255, 255, 255);
+          doc.text("GENZET HOME", 14, 12);
+          doc.setFontSize(10);
+          doc.text(`NO: ${noInvoice}`, 160, 12);
 
-      doc.text(`Tanggal: ${new Date().toLocaleDateString("id-ID")}`, 14, 80);
-      doc.text(`Periode: ${periode}`, 14, 88);
+          doc.setTextColor(0, 0, 0);
+          doc.setFontSize(12);
+          doc.text("Bill To:", 14, 35);
+          doc.text(nama, 14, 42);
+          const alamatSplit = doc.splitTextToSize(alamat, 80);
+          doc.text(alamatSplit, 14, 49);
 
-      doc.autoTable({
-        startY: 100,
-        head: [['Description', 'Qty', 'Price', 'Total']],
-        body: [[`Internet Paket ${paket}`, '1', `Rp${Number(nominal).toLocaleString("id-ID")}`, `Rp${Number(nominal).toLocaleString("id-ID")}`]],
-        styles: { halign: 'center' },
-        headStyles: { fillColor: [0, 51, 153] }
+          doc.text("From:", 130, 35);
+          doc.text("GENZET HOME", 130, 42);
+          doc.text("Jl. Bambu Apus, Jakarta Timur", 130, 49);
+
+          const bodyRows = [
+            [`Internet Paket ${paket}`, '1', periodeStr, `Rp${Number(nominal).toLocaleString("id-ID")}`, `Rp${Number(nominal).toLocaleString("id-ID")}`]
+          ];
+
+          if (pemasanganMonthYear === invoiceMonthYear) {
+            bodyRows.push([
+              'Jasa Instalasi', '1', periodeStr, `Rp${Number(50000).toLocaleString("id-ID")}`, `Rp${Number(50000).toLocaleString("id-ID")}`
+            ]);
+          }
+
+          const totalTagihan = bodyRows.reduce((sum, row) => sum + Number(row[4].replace(/[^\d]/g, '')), 0);
+          bodyRows.push([
+            { content: 'TOTAL', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } },
+            `Rp${Number(totalTagihan).toLocaleString("id-ID")}`
+          ]);
+
+          doc.autoTable({
+            startY: 75,
+            head: [['Description', 'Qty', 'Periode', 'Price', 'Total']],
+            body: bodyRows,
+            styles: { halign: 'left', valign: 'middle', fontSize: 12, cellPadding: 6 },
+            headStyles: { fillColor: [0, 51, 153], halign: 'left', valign: 'middle' },
+            margin: { left: 15, right: 15 }
+          });
+
+          const tanggalStr = `${periodeNow.getDate().toString().padStart(2, '0')}-${(periodeNow.getMonth() + 1).toString().padStart(2, '0')}-${periodeNow.getFullYear()}`;
+
+          doc.setFontSize(10);
+          doc.text(`Tanggal: ${tanggalStr}`, 130, doc.lastAutoTable.finalY + 10);
+
+          doc.setFontSize(10);
+          doc.text("Payment Information:", 14, doc.lastAutoTable.finalY + 10);
+          doc.text("Bank: BANK GENZET", 14, doc.lastAutoTable.finalY + 17);
+          doc.text("No. Rek: 1234567890", 14, doc.lastAutoTable.finalY + 24);
+          doc.text("Email: support@genzet.com", 14, doc.lastAutoTable.finalY + 31);
+
+          const pdfBlob = doc.output('blob');
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          window.open(pdfUrl, "_blank");
+        }
       });
-
-      doc.setFontSize(14);
-      doc.text(`Total: Rp${Number(nominal).toLocaleString('id-ID')}`, 160, doc.lastAutoTable.finalY + 10, { align: 'right' });
-
-      doc.setFontSize(10);
-      doc.text("Payment Information:", 14, doc.lastAutoTable.finalY + 25);
-      doc.text("Bank: BANK GENZET", 14, doc.lastAutoTable.finalY + 32);
-      doc.text("No. Rek: 1234567890", 14, doc.lastAutoTable.finalY + 39);
-      doc.text("Email: support@genzet.com", 14, doc.lastAutoTable.finalY + 46);
-
-      doc.setFontSize(16);
-      doc.setTextColor(0, 51, 153);
-      doc.text("Thank You!", 105, doc.lastAutoTable.finalY + 65, null, null, 'center');
-
-      const pdfBlob = doc.output('blob');
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, "_blank");
     };
 
-    // Web Component Navbar
     class MyNavbar extends HTMLElement {
       connectedCallback() {
         this.innerHTML = `
@@ -253,9 +274,9 @@
         }, 0);
       }
     }
+
     customElements.define('my-navbar', MyNavbar);
   </script>
-
 </body>
 
 </html>
