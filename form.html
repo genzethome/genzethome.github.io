@@ -59,12 +59,12 @@
 
           <div class="col-md-2">
             <label for="rt" class="form-label">RT</label>
-            <input type="text" class="form-control" id="rt" required>
+            <input type="text" class="form-control" id="rt" required inputmode="numeric" pattern="\d*">
           </div>
 
           <div class="col-md-2">
             <label for="rw" class="form-label">RW</label>
-            <input type="text" class="form-control" id="rw" required>
+            <input type="text" class="form-control" id="rw" required inputmode="numeric" pattern="\d*">
           </div>
 
           <div class="col-md-4">
@@ -89,17 +89,17 @@
 
           <div class="col-md-4">
             <label for="kodepos" class="form-label">Kode Pos</label>
-            <input type="text" class="form-control" id="kodepos" required>
+            <input type="text" class="form-control" id="kodepos" required inputmode="numeric" pattern="\d*">
           </div>
 
           <div class="col-md-6">
             <label for="telepon" class="form-label">No. Telepon</label>
-            <input type="tel" class="form-control" id="telepon" required>
+            <input type="tel" class="form-control" id="telepon" required inputmode="numeric" pattern="\d*">
           </div>
 
           <div class="col-md-6">
             <label for="tglPemasangan" class="form-label">Tanggal Pemasangan</label>
-            <input type="date" class="form-control" id="tglPemasangan" required>
+            <input type="text" class="form-control" id="tglPemasangan" placeholder="Ketik today untuk mengisi tanggal otomatis" required>
           </div>
 
           <div class="col-md-6">
@@ -109,11 +109,6 @@
               <option value="15Mbps">15Mbps - Rp 130.000</option>
               <option value="40Mbps">40Mbps - Rp 210.000</option>
             </select>
-          </div>
-
-          <div class="col-md-6">
-            <label for="nominal" class="form-label">Nominal</label>
-            <input type="text" class="form-control" id="nominal" readonly required>
           </div>
 
           <div class="col-12 d-grid">
@@ -177,17 +172,16 @@
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
-                 <ul class="navbar-nav ms-auto">
-  <li class="nav-item"><a href="/cpanel.html" class="nav-link text-dark"><i class="fa-solid fa-chart-line"></i> Laporan</a></li>
-  <li class="nav-item"><a href="/pemasukan.html" class="nav-link text-dark"><i class="fa-solid fa-wallet"></i> Pemasukan</a></li>
-  <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark"><i class="fa-solid fa-money-bill-wave"></i> Pengeluaran</a></li>
-  <li class="nav-item"><a href="/assets.html" class="nav-link text-dark"><i class="fa-solid fa-box-archive"></i> Assets</a></li>
-  <li class="nav-item"><a href="/form.html" class="nav-link text-dark"><i class="fa-solid fa-file-lines"></i> Formulir</a></li>
-  <!-- ✅ Tambahan Approval -->
-  <li class="nav-item"><a href="/approval.html" class="nav-link text-dark"><i class="fa-solid fa-circle-check"></i> Approval</a></li>
-  <li class="nav-item"><a href="/pelanggan.html" class="nav-link text-dark"><i class="fa-solid fa-users"></i> Pelanggan</a></li>
-  <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link text-dark"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-</ul>
+                <ul class="navbar-nav ms-auto">
+                  <li class="nav-item"><a href="/cpanel.html" class="nav-link text-dark"><i class="fa-solid fa-chart-line"></i> Laporan</a></li>
+                  <li class="nav-item"><a href="/pemasukan.html" class="nav-link text-dark"><i class="fa-solid fa-wallet"></i> Pemasukan</a></li>
+                  <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark"><i class="fa-solid fa-money-bill-wave"></i> Pengeluaran</a></li>
+                  <li class="nav-item"><a href="/assets.html" class="nav-link text-dark"><i class="fa-solid fa-box-archive"></i> Assets</a></li>
+                  <li class="nav-item"><a href="/form.html" class="nav-link text-dark"><i class="fa-solid fa-file-lines"></i> Formulir</a></li>
+                  <li class="nav-item"><a href="/approval.html" class="nav-link text-dark"><i class="fa-solid fa-circle-check"></i> Approval</a></li>
+                  <li class="nav-item"><a href="/pelanggan.html" class="nav-link text-dark"><i class="fa-solid fa-users"></i> Pelanggan</a></li>
+                  <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link text-dark"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                </ul>
               </div>
             </div>
           </nav>`;
@@ -196,31 +190,45 @@
     }
     customElements.define("my-navbar", MyNavbar);
 
-    // SweetAlert Syarat Ketentuan on page load
     window.addEventListener("load", () => {
       Swal.fire({
         title: 'Syarat & Ketentuan',
-        html: `
-          <ol class="text-start small ps-3">
+        html: `<ol class="text-start small ps-3">
             <li>Lokasi pemasangan sudah terjangkau oleh jaringan layanan GenzetHome.</li>
             <li>Gratis biaya pemasangan selama masa promosi berlaku.</li>
             <li>Layanan GenzetHome adalah pra bayar, ditagihkan di awal masa berlangganan dan tagihan akan dikirimkan melalui email atau WhatsApp.</li>
             <li>Pembayaran tagihan dapat dilakukan melalui Virtual Account Bank, Alfamart, dan Indomaret.</li>
             <li>Harga langganan sudah termasuk pajak 11%.</li>
             <li>Kecepatan layanan internet yang ditawarkan adalah kecepatan maksimum yang dapat dicapai.</li>
-          </ol>
-        `,
+          </ol>`,
         confirmButtonText: 'Saya Setuju',
         confirmButtonColor: '#198754',
         allowOutsideClick: false
       });
     });
 
-    document.getElementById("paket").addEventListener("change", function () {
-      const nominalField = document.getElementById("nominal");
-      if (this.value === "15Mbps") nominalField.value = "130000";
-      else if (this.value === "40Mbps") nominalField.value = "210000";
-      else nominalField.value = "";
+    ['rt', 'rw', 'kodepos', 'telepon'].forEach(id => {
+      document.getElementById(id).addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/\D/g, '');
+      });
+    });
+
+    // Format tanggal ke yyyy-mm-dd
+    function formatToYMD(tanggal) {
+      let [dd, mm, yyyy] = tanggal.split("-");
+      if (yyyy.length === 2) yyyy = "20" + yyyy;
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    document.getElementById("tglPemasangan").addEventListener("input", function (e) {
+      let val = e.target.value.trim().toLowerCase();
+      if (val === "today") {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        e.target.value = `${dd}-${mm}-${yyyy}`;
+      }
     });
 
     document.getElementById("regWifiForm").addEventListener("submit", async function (e) {
@@ -229,6 +237,14 @@
         this.classList.add('was-validated');
         return;
       }
+
+      const paket = document.getElementById("paket").value;
+      let nominal = 0;
+      if (paket === "15Mbps") nominal = 130000;
+      else if (paket === "40Mbps") nominal = 210000;
+
+      let tglInput = document.getElementById("tglPemasangan").value.trim();
+      let tglFormatted = formatToYMD(tglInput);
 
       const data = {
         nama: document.getElementById("nama").value.trim(),
@@ -242,9 +258,9 @@
         provinsi: document.getElementById("provinsi").value.trim(),
         kodepos: document.getElementById("kodepos").value.trim(),
         nohp: document.getElementById("telepon").value.trim(),
-        paket: document.getElementById("paket").value,
-        nominal: document.getElementById("nominal").value,
-        tglPemasangan: document.getElementById("tglPemasangan").value,
+        paket: paket,
+        nominal: nominal,
+        tglPemasangan: tglFormatted,
         uploader: currentUser?.email || "-"
       };
 
@@ -259,10 +275,8 @@
 
       this.reset();
       this.classList.remove("was-validated");
-      document.getElementById("nominal").value = "";
     });
   </script>
 
 </body>
-
 </html>
