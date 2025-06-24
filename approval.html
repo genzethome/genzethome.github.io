@@ -9,8 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
   <style>
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       background: #f8f9fa;
@@ -25,27 +24,24 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .table th,
-    .table td {
+    .table th, .table td {
       vertical-align: middle;
     }
 
-        .small-textarea {
-  resize: none;
-  overflow: auto;
-  height: 2.2em;
-  font-size: 0.85rem;
-  background-color: #f8f9fa;
-  border-color: #ced4da;
-  cursor: default;
+    .small-textarea {
+      resize: none;
+      overflow: auto;
+      height: 2.2em;
+      font-size: 0.85rem;
+      background-color: #f8f9fa;
+      border-color: #ced4da;
+      cursor: default;
+      scrollbar-width: none;
+    }
 
-  /* HILANGKAN scrollbar, fungsi scroll tetap ada */
-  scrollbar-width: none; /* Firefox */
-}
-.small-textarea::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
-}
-
+    .small-textarea::-webkit-scrollbar {
+      display: none;
+    }
   </style>
 </head>
 
@@ -87,7 +83,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getFirestore, collection, getDocs, doc, deleteDoc, addDoc, getDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -131,7 +127,7 @@
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                 <ul class="navbar-nav ms-auto">
   <li class="nav-item"><a href="/cpanel.html" class="nav-link text-dark"><i class="fa-solid fa-chart-line"></i> Laporan</a></li>
   <li class="nav-item"><a href="/pemasukan.html" class="nav-link text-dark"><i class="fa-solid fa-wallet"></i> Pemasukan</a></li>
   <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark"><i class="fa-solid fa-money-bill-wave"></i> Pengeluaran</a></li>
@@ -204,9 +200,15 @@
       });
 
       if (confirm.isConfirmed) {
-        await addDoc(collection(db, "pelanggan"), data);
+        const pelangganSnapshot = await getDocs(collection(db, "pelanggan"));
+        const nextKode = (pelangganSnapshot.size + 1).toString().padStart(5, '0');
+
+        await addDoc(collection(db, "pelanggan"), {
+          ...data,
+          kode_pelanggan: nextKode
+        });
         await deleteDoc(docRef);
-        Swal.fire("Disetujui!", `${data.nama} telah ditambahkan sebagai pelanggan.`, "success");
+        Swal.fire("Disetujui!", `${data.nama} telah ditambahkan sebagai pelanggan.<br>Kode Pelanggan: ${nextKode}`, "success");
         loadData();
       }
     }
