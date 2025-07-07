@@ -64,19 +64,27 @@
       <div class="progress"><div id="progressSaldo" class="progress-bar bg-primary" style="width: 0%;"></div></div>
     </div>
   </div>
+
+ <div class="card mb-4">
+  <div class="card-header bg-success text-white">
+    <i class="fas fa-cloud-sun"></i> Cuaca Terkini
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">Citra Mulya Raya, Cibarusah</h5>
+    <table class="table table-borderless table-sm mb-0" style="table-layout: fixed; width: 100%;">
+  <colgroup>
+    <col style="width: 5%;">
+    <col style="width: 25%;">
+    <col style="width: 2%;">
+    <col style="width: auto;">
+  </colgroup>
+  <tbody id="weather"></tbody>
+</table>
+  </div>
+</div>
+
 </div>
   
-    <div class="card mb-4" style="max-width: 24rem;">
-    <div class="card-header bg-success text-white">
-      <i class="fa-solid fa-chart-bar"></i> Perbandingan
-    </div>
-    <div class="card-body text-success">
-      <h5 class="card-title">Citra Mulya Raya, Cibarusah</h5>
-      <div id="weather">
-        <p>Sedang mengambil data cuaca...</p>
-      </div>
-    </div>
-  </div>
 
   
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -104,19 +112,49 @@
     }
 
     function renderWeather(data) {
-      const temp = data.main.temp;
-      const condition = data.weather[0].description;
-      const humidity = data.main.humidity;
-      const wind = data.wind.speed;
+  const temp = data.main.temp;
+  const condition = data.weather[0].description;
+  const humidity = data.main.humidity;
+  const wind = data.wind.speed;
 
-      weatherDiv.innerHTML = `
-        <p><i class="fas fa-temperature-high"></i> <strong>Suhu:</strong> ${temp}°C</p>
-        <p><i class="fas fa-cloud"></i> <strong>Kondisi:</strong> ${condition}</p>
-        <p><i class="fas fa-tint"></i> <strong>Kelembapan:</strong> ${humidity}%</p>
-        <p><i class="fas fa-wind"></i> <strong>Angin:</strong> ${wind} m/s</p>
-        <p class="text-muted small">Terakhir diperbarui: ${new Date().toLocaleTimeString()}</p>
-      `;
-    }
+  weatherDiv.innerHTML = `
+    <tr>
+      <td class="text-success align-middle pe-0"><i class="fas fa-temperature-high"></i></td>
+      <td class="align-middle ps-1 pe-0"><strong>Suhu</strong></td>
+      <td class="align-middle px-0">:</td>
+      <td class="align-middle ps-1">${temp}°C</td>
+    </tr>
+    <tr>
+      <td class="text-success align-middle pe-0"><i class="fas fa-cloud"></i></td>
+      <td class="align-middle ps-1 pe-0"><strong>Kondisi</strong></td>
+      <td class="align-middle px-0">:</td>
+      <td class="align-middle ps-1">${condition}</td>
+    </tr>
+    <tr>
+      <td class="text-success align-middle pe-0"><i class="fas fa-tint"></i></td>
+      <td class="align-middle ps-1 pe-0"><strong>Kelembapan</strong></td>
+      <td class="align-middle px-0">:</td>
+      <td class="align-middle ps-1">${humidity}%</td>
+    </tr>
+    <tr>
+      <td class="text-success align-middle pe-0"><i class="fas fa-wind"></i></td>
+      <td class="align-middle ps-1 pe-0"><strong>Angin</strong></td>
+      <td class="align-middle px-0">:</td>
+      <td class="align-middle ps-1">${wind} m/s</td>
+    </tr>
+    <tr>
+     <td colspan="4" class="text-muted small pt-1 text-end">
+  Terakhir diperbarui: ${new Date().toLocaleTimeString()}
+</td>
+    </tr>
+  `;
+}
+
+
+
+
+
+
 
     fetchWeather();
     setInterval(fetchWeather, 5 * 60 * 1000);
