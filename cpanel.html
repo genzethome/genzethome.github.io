@@ -65,9 +65,61 @@
     </div>
   </div>
 </div>
-
+  
+  <div class="card border-success mb-3" style="max-width: 24rem;">
+    <div class="card-header bg-success text-white">
+      <i class="fas fa-cloud-sun"></i> Cuaca Terkini
+    </div>
+    <div class="card-body text-success">
+      <h5 class="card-title">Citra Mulya Raya, Cibarusah</h5>
+      <div id="weather">
+        <p>Sedang mengambil data cuaca...</p>
+      </div>
+    </div>
+  </div>
+  
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script type="module">
+    const API_KEY = "1c02b03323602402ca922b951c366cc9";
+    const LAT = -6.3521;
+    const LON = 107.0577;
+
+    const weatherDiv = document.getElementById("weather");
+
+    async function fetchWeather() {
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&units=metric&lang=id&appid=${API_KEY}`
+        );
+        if (!response.ok) throw new Error("API error");
+        const data = await response.json();
+        renderWeather(data);
+      } catch (error) {
+        console.error(error);
+        weatherDiv.innerHTML = `<p class="text-danger">Gagal mengambil data cuaca.</p>`;
+      }
+    }
+
+    function renderWeather(data) {
+      const temp = data.main.temp;
+      const condition = data.weather[0].description;
+      const humidity = data.main.humidity;
+      const wind = data.wind.speed;
+
+      weatherDiv.innerHTML = `
+        <p><i class="fas fa-temperature-high"></i> <strong>Suhu:</strong> ${temp}°C</p>
+        <p><i class="fas fa-cloud"></i> <strong>Kondisi:</strong> ${condition}</p>
+        <p><i class="fas fa-tint"></i> <strong>Kelembapan:</strong> ${humidity}%</p>
+        <p><i class="fas fa-wind"></i> <strong>Angin:</strong> ${wind} m/s</p>
+        <p class="text-muted small">Terakhir diperbarui: ${new Date().toLocaleTimeString()}</p>
+      `;
+    }
+
+    fetchWeather();
+    setInterval(fetchWeather, 5 * 60 * 1000);
+  </script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
