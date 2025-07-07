@@ -11,6 +11,9 @@
     body { background-color: #f8f9fa; }
     .progress { height: 20px; }
     .progress-bar { font-size: 0; transition: width 0.8s ease; }
+    td { vertical-align: middle; }
+    table { table-layout: auto; width: 100%; }
+
   </style>
 </head>
 <body>
@@ -66,23 +69,24 @@
   </div>
 
  <div class="card mb-4">
-  <div class="card-header bg-success text-white">
-    <i class="fas fa-cloud-sun"></i> Cuaca Terkini
+    <div class="card-header bg-success text-white">
+      <i class="fas fa-cloud-sun"></i> Cuaca Terkini
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Citra Mulya Raya, Cibarusah</h5>
+      <table class="table table-borderless">
+        <colgroup>
+          <col style="width: 30px;">
+          <col style="width: 140px;">
+          <col style="width: 10px;">
+          <col style="width: auto;">
+        </colgroup>
+        <tbody id="weather">
+          <!-- Data cuaca inject disini -->
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="card-body">
-    <h5 class="card-title">Citra Mulya Raya, Cibarusah</h5>
-    <table class="table table-borderless table-sm mb-0" style="table-layout: fixed; width: 100%;">
-  <colgroup>
-    <col style="width: 5%;">
-    <col style="width: 25%;">
-    <col style="width: 2%;">
-    <col style="width: auto;">
-  </colgroup>
-  <tbody id="weather"></tbody>
-</table>
-  </div>
-</div>
-
 </div>
   
 
@@ -118,36 +122,36 @@
   const wind = data.wind.speed;
 
   weatherDiv.innerHTML = `
-    <tr>
-      <td class="text-success align-middle pe-0"><i class="fas fa-temperature-high"></i></td>
-      <td class="align-middle ps-1 pe-0"><strong>Suhu</strong></td>
-      <td class="align-middle px-0">:</td>
-      <td class="align-middle ps-1">${temp}°C</td>
+  <tr>
+      <td class="text-success align-middle"><i class="fas fa-temperature-high"></i></td>
+      <td class="align-middle text-nowrap"><strong>Suhu</strong></td>
+      <td class="align-middle text-end px-1">:</td>
+      <td class="align-middle">${temp}°C</td>
     </tr>
     <tr>
-      <td class="text-success align-middle pe-0"><i class="fas fa-cloud"></i></td>
-      <td class="align-middle ps-1 pe-0"><strong>Kondisi</strong></td>
-      <td class="align-middle px-0">:</td>
-      <td class="align-middle ps-1">${condition}</td>
+      <td class="text-success align-middle"><i class="fas fa-cloud"></i></td>
+      <td class="align-middle text-nowrap"><strong>Kondisi</strong></td>
+      <td class="align-middle text-end px-1">:</td>
+      <td class="align-middle">${condition}</td>
     </tr>
     <tr>
-      <td class="text-success align-middle pe-0"><i class="fas fa-tint"></i></td>
-      <td class="align-middle ps-1 pe-0"><strong>Kelembapan</strong></td>
-      <td class="align-middle px-0">:</td>
-      <td class="align-middle ps-1">${humidity}%</td>
+      <td class="text-success align-middle"><i class="fas fa-tint"></i></td>
+      <td class="align-middle text-nowrap"><strong>Kelembapan</strong></td>
+      <td class="align-middle text-end px-1">:</td>
+      <td class="align-middle">${humidity}%</td>
     </tr>
     <tr>
-      <td class="text-success align-middle pe-0"><i class="fas fa-wind"></i></td>
-      <td class="align-middle ps-1 pe-0"><strong>Angin</strong></td>
-      <td class="align-middle px-0">:</td>
-      <td class="align-middle ps-1">${wind} m/s</td>
+      <td class="text-success align-middle"><i class="fas fa-wind"></i></td>
+      <td class="align-middle text-nowrap"><strong>Angin</strong></td>
+      <td class="align-middle text-end px-1">:</td>
+      <td class="align-middle">${wind} m/s</td>
     </tr>
     <tr>
-     <td colspan="4" class="text-muted small pt-1 text-end">
-  Terakhir diperbarui: ${new Date().toLocaleTimeString()}
-</td>
+      <td colspan="4" class="text-end text-muted small pt-1">
+        Terakhir diperbarui: ${new Date().toLocaleTimeString()}
+      </td>
     </tr>
-  `;
+`;
 }
 
 
