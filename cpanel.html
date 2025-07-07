@@ -21,7 +21,7 @@
 <my-navbar></my-navbar>
 
 <div class="container mb-5">
-  <h4 class="mb-4 text-center"><i class="fa-solid fa-chart-bar"></i> Laporan Keuangan</h4>
+
 
   <div class="mb-3 text-end">
     <button class="btn btn-secondary" id="refreshBtn"><i class="fa-solid fa-rotate-right"></i></button>
@@ -70,10 +70,9 @@
 
  <div class="card mb-4">
     <div class="card-header bg-success text-white">
-      <i class="fas fa-cloud-sun"></i> Cuaca Terkini
+      <i class="fas fa-cloud-sun"></i> Cuaca Terkini Citra Mulya Raya Cibarusah
     </div>
     <div class="card-body">
-      <h5 class="card-title">Citra Mulya Raya, Cibarusah</h5>
       <table class="table table-borderless">
         <colgroup>
           <col style="width: 30px;">
@@ -87,12 +86,115 @@
       </table>
     </div>
   </div>
+
+
+  <!-- ✅ Card HEADER & container -->
+<div class="card mb-4">
+  <div class="card-header bg-success text-white">
+    <i class="fas fa-tasks"></i> Jadwal Jatuh Tempo
+  </div>
+  <div class="card-body">
+    <!-- Card isi akan di-render di sini -->
+    <div id="timeline" class="d-flex gap-3 overflow-auto"></div>
+  </div>
+</div>
+
+
 </div>
   
 
   
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  
+ 
+    <div id="timeline" class="d-flex gap-3 overflow-auto pb-2"></div>
+
+
+
+<!-- Firebase & FontAwesome sudah ada -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCxjTmRPiF4OrRAsneB_SUi1SpGOgkwrYg",
+    authDomain: "genzet-home.firebaseapp.com",
+    projectId: "genzet-home",
+    storageBucket: "genzet-home.appspot.com",
+    messagingSenderId: "586231239859",
+    appId: "1:586231239859:web:9fc3a69f2f2ef0bf8c8cc6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const timelineDiv = document.getElementById("timeline");
+
+  async function loadTimeline() {
+    const snapshot = await getDocs(collection(db, "pelanggan"));
+    const items = [];
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      items.push({
+        nama: d.nama,
+        nominal: d.nominal,
+        tglPasang: d.tglPemasangan // format: dd-mm-yyyy
+      });
+    });
+
+    items.sort((a, b) => {
+      const [ddA, mmA, yyyyA] = a.tglPasang.split('-').map(Number);
+      const [ddB, mmB, yyyyB] = b.tglPasang.split('-').map(Number);
+      return ddA - ddB;
+    });
+
+    const today = new Date();
+    let html = '';
+
+    items.forEach(item => {
+  const [yyyy, mm, dd] = item.tglPasang.split('-').map(Number);
+
+  // Tanggal pasang ➜ update ke bulan sekarang
+  let jatuhTempo = new Date(today.getFullYear(), today.getMonth(), dd);
+
+  // Kalau sudah lewat, bulan depan
+  if (today.getDate() > dd) {
+    jatuhTempo.setMonth(jatuhTempo.getMonth() + 1);
+  }
+
+  const diffTime = jatuhTempo - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const isToday = diffDays === 0;
+  const isWarning = diffDays <= 7 && diffDays >= 0;
+
+  const cardClass = isWarning ? 'bg-danger text-white' : 'bg-light';
+
+  html += `
+    <div class="card ${cardClass} shadow-sm flex-shrink-0" style="min-width: 220px;">
+      <div class="card-body">
+        <h6 class="card-title mb-1">
+          <i class="fas fa-user"></i> ${item.nama}
+        </h6>
+        <p class="card-text mb-1">
+          <i class="fas fa-money-bill"></i> Rp ${Number(item.nominal).toLocaleString()}
+        </p>
+        <small class="text-muted ${isWarning ? 'text-white' : ''}">
+          <i class="fas fa-calendar"></i> ${jatuhTempo.toLocaleDateString('id-ID')}
+          ${isToday ? '<span class="badge bg-dark ms-1">Hari Ini</span>' : ''}
+        </small>
+      </div>
+    </div>
+  `;
+});
+
+    timelineDiv.innerHTML = html || '<p class="text-muted">Tidak ada jadwal.</p>';
+  }
+
+  loadTimeline();
+</script>
+
 
    <script type="module">
     const API_KEY = "1c02b03323602402ca922b951c366cc9";
@@ -146,11 +248,7 @@
       <td class="align-middle text-end px-1">:</td>
       <td class="align-middle">${wind} m/s</td>
     </tr>
-    <tr>
-      <td colspan="4" class="text-end text-muted small pt-1">
-        Terakhir diperbarui: ${new Date().toLocaleTimeString()}
-      </td>
-    </tr>
+   
 `;
 }
 
