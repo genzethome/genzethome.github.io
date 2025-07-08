@@ -106,7 +106,7 @@
             <label for="paket" class="form-label">Paket Internet</label>
             <select class="form-select" id="paket" required>
               <option value="">-- Pilih Paket --</option>
-              <option value="15Mbps">15Mbps - Rp 130.000</option>
+              <option value="15Mbps">15Mbps - Rp 150.000</option>
               <option value="40Mbps">40Mbps - Rp 210.000</option>
             </select>
           </div>
@@ -240,7 +240,7 @@
 
       const paket = document.getElementById("paket").value;
       let nominal = 0;
-      if (paket === "15Mbps") nominal = 130000;
+      if (paket === "15Mbps") nominal = 150000;
       else if (paket === "40Mbps") nominal = 210000;
 
       let tglInput = document.getElementById("tglPemasangan").value.trim();
