@@ -90,10 +90,10 @@ body {
 }
 
 /* Sembunyikan scrollbar (browser modern) */
-.card-body p-0 table-responsive::-webkit-scrollbar {
+.table::-webkit-scrollbar {
   display: none;
 }
-.card-body p-0 table-responsive {
+.table {
   -ms-overflow-style: none;  /* IE/Edge */
   scrollbar-width: none;     /* Firefox */
 }
