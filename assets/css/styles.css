@@ -2,14 +2,12 @@ body {
   background-color: #f8f9fa;
 }
 
-#tablePemasukan {
-  table-layout: fixed;
-  width: 100%;
-  word-wrap: break-word;
+.table-responsive::-webkit-scrollbar {
+  display: none;
 }
-
 .table-responsive {
-  overflow-x: hidden !important;
+  -ms-overflow-style: none;  /* IE & Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
 
