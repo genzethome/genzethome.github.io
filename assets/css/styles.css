@@ -5,10 +5,13 @@ body {
 .table-responsive::-webkit-scrollbar {
   display: none;
 }
+
 .table-responsive {
-  -ms-overflow-style: none;  /* IE & Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-x: hidden !important;
 }
+
 
 
 .main-content {
