@@ -38,6 +38,16 @@ body {
   margin-right: 1rem;
 }
 
+/* Sembunyikan scrollbar horizontal dan vertikal */
+::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  -ms-overflow-style: none;  /* IE dan Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
 /* Sembunyikan scrollbar (browser modern) */
 .timeline-wrapper::-webkit-scrollbar {
   display: none;
