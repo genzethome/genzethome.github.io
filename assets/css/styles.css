@@ -177,7 +177,7 @@ body {
   display: none;
 }
 
-#tablePemasukan th,
-#tablePemasukan td {
+.table table-striped mb-0 th,
+.table table-striped mb-0 td {
   white-space: nowrap;
 }
