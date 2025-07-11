@@ -176,3 +176,8 @@ body {
 .table-responsive::-webkit-scrollbar {
   display: none;
 }
+
+#tablePemasukan th,
+#tablePemasukan td {
+  white-space: nowrap;
+}
