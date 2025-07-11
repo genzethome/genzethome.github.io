@@ -177,7 +177,9 @@ body {
   display: none;
 }
 
-.table-light th,
-.table-light tr {
-   white-space: nowrap !important;
+#tablePemasukan th,
+#tablePemasukan td,
+#tablePemasukan th *,
+#tablePemasukan td * {
+  white-space: nowrap !important;
 }
