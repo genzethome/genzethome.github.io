@@ -178,6 +178,6 @@ body {
 }
 
 .table table-striped mb-0 th,
-.table table-striped mb-0 td {
+.table table-striped mb-0 tr {
   white-space: nowrap;
 }
