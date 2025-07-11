@@ -2,18 +2,6 @@ body {
   background-color: #f8f9fa;
 }
 
-.table-responsive::-webkit-scrollbar {
-  display: none;
-}
-
-.table-responsive {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  overflow-x: hidden !important;
-}
-
-
-
 .main-content {
   max-width: 960px;
   margin: 0 auto;
@@ -48,16 +36,6 @@ body {
 #timeline > .card {
   display: inline-block;
   margin-right: 1rem;
-}
-
-/* Sembunyikan scrollbar horizontal dan vertikal */
-::-webkit-scrollbar {
-  display: none;
-}
-
-body {
-  -ms-overflow-style: none;  /* IE dan Edge */
-  scrollbar-width: none;     /* Firefox */
 }
 
 /* Sembunyikan scrollbar (browser modern) */
@@ -193,4 +171,8 @@ body {
 
 .table-responsive {
   overflow-x: auto;
+}
+
+.table-responsive::-webkit-scrollbar {
+  display: none;
 }
