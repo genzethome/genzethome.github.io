@@ -177,7 +177,7 @@ body {
   display: none;
 }
 
-.table table-striped mb-0 th,
-.table table-striped mb-0 tr {
-  white-space: nowrap;
+.table-light th,
+.table-light tr {
+   white-space: nowrap !important;
 }
