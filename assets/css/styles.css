@@ -183,3 +183,10 @@ body {
 #tablePemasukan td * {
   white-space: nowrap !important;
 }
+
+.table table-striped th,
+.table table-striped td,
+.table table-striped th *,
+.table table-striped td * {
+  white-space: nowrap !important;
+}
