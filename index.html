@@ -104,6 +104,26 @@
       </div>
 
       <div class="card mb-4">
+  <div class="card-header bg-success text-white">
+    <i class="fa-solid fa-chart-simple"></i> Persentase Saham
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div style="height: 300px;">
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div style="height: 300px;">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="card mb-4">
         <div class="card-header bg-success text-white">
           <i class="fas fa-cloud-sun"></i> Cuaca Citra Mulya Raya 
         </div>
@@ -121,6 +141,7 @@
           </table>
         </div>
       </div>
+
       <!-- ✅ Card HEADER & container -->
       <div class="card mb-4">
         <div class="card-header bg-success text-white">
@@ -133,8 +154,15 @@
 </div>
         </div>
       </div>
-    </div>
+   
     <div id="timeline" class="d-flex gap-3 overflow-auto pb-2"></div>
+ </div>
+
+
+<!-- Tambahkan Chart.js CDN jika belum ada -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -142,5 +170,6 @@
     <script type="module" src="/assets/js/weather.js"></script>
     <script type="module" src="/assets/js/laporan.js"></script>
     <script type="module" src="/assets/js/navbar.js"></script>
+    <script type="module" src="/assets/js/chart.js"></script>
   </body>
 </html>
