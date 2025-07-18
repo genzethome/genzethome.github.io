@@ -1,7 +1,7 @@
 import { db } from "./firebase-init.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-const targetNames = ["firzi", "abizar", "yuda", "zahdan", "jerry", "baruna", "maulana"];
+const targetNames = ["abi", "baruna", "firzi", "jerry", "mahija", "maulana", "yuda","zahdan"];
 
 async function ambilData() {
   const hasil = {};
@@ -26,9 +26,15 @@ function buatChart(labels, data) {
   const ctxBar = document.getElementById("barChart").getContext("2d");
   const ctxPie = document.getElementById("pieChart").getContext("2d");
 
-  const colors = [
-    "#3498db", "#e74c3c", "#f1c40f",
-    "#1abc9c", "#9b59b6", "#e67e22", "#2ecc71"
+   const colors = [
+    "#3498db", // biru
+    "#e74c3c", // merah
+    "#f1c40f", // kuning
+    "#1abc9c", // hijau tosca
+    "#9b59b6", // ungu
+    "#e67e22", // oranye
+    "#2ecc71", // hijau
+    "#34495e"  // abu-abu gelap (warna tambahan agar tidak duplikat)
   ];
 
   // ✅ BAR
