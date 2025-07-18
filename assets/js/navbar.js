@@ -29,6 +29,7 @@ class MyNavbar extends HTMLElement {
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a href="/index.html" class="nav-link text-dark"><i class="fa-solid fa-chart-line"></i> Laporan</a></li>
+                <li class="nav-item"><a href="/absen.html"class="nav-link text-dark"><i class="fa-solid fa-user-check"></i> Absen</a></li>
                 <li class="nav-item"><a href="/pemasukan.html" class="nav-link text-dark"><i class="fa-solid fa-wallet"></i> Pemasukan</a></li>
                 <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark"><i class="fa-solid fa-money-bill-wave"></i> Pengeluaran</a></li>
                 <li class="nav-item"><a href="/assets.html" class="nav-link text-dark"><i class="fa-solid fa-box-archive"></i> Assets</a></li>
