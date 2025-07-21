@@ -212,7 +212,6 @@ exportBtn.addEventListener('click', () => {
       Kegiatan: row.children[3].textContent,
       Jam: row.children[4].textContent,
       Tanggal: row.children[5].textContent,
-      UploadBy: row.children[6].textContent,
     };
     data.push(rowData);
   });
