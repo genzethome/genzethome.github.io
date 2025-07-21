@@ -1,251 +1,266 @@
-// absen.js
+import "./navbar.js";
 import { db, auth } from './firebase-init.js';
 import {
-  collection, addDoc, Timestamp, onSnapshot, query, orderBy, deleteDoc, doc
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  Timestamp,
 } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js';
-import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
-import './navbar.js';
 
-// Format tanggal dd-mm-yyyy (string)
-function formatTanggalStr(dateObj) {
-  const dd = String(dateObj.getDate()).padStart(2, '0');
-  const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const yyyy = dateObj.getFullYear();
-  return `${dd}-${mm}-${yyyy}`;
-}
-
-// Parse tanggal input (yyyy-mm-dd) jadi Date object
-function parseTanggalInput(str) {
-  const [yyyy, mm, dd] = str.split('-');
-  return new Date(`${yyyy}-${mm}-${dd}`);
-}
-
-const tanggalInput = document.getElementById('tanggal');
-const namaInput = document.getElementById('nama');
 const absenForm = document.getElementById('absenForm');
-const tableBody = document.querySelector('#tabelAbsen tbody');
-const selectAllCheckbox = document.getElementById('selectAll');
+const usernameInput = document.getElementById('username');
+const tanggalInput = document.getElementById('tanggal');
+const keteranganInput = document.getElementById('keterangan');
+const kegiatanInputs = document.getElementsByName('kegiatan');
+const tableBody = document.getElementById('absenBody');
 const pageLengthSelect = document.getElementById('pageLengthSelect');
-const searchBtn = document.getElementById('searchBtn');
-const exportExcelBtn = document.getElementById('exportExcelBtn');
-const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
-
-let dataTable;
-const absenCol = collection(db, "absen");
 
 let currentUserName = '';
-const today = new Date();
-const todayISO = today.toISOString().split('T')[0];
-tanggalInput.value = todayISO;
-tanggalInput.max = todayISO;
 
-// Auto isi nama dari user login
-onAuthStateChanged(auth, user => {
+// ✅ Atur tanggal default hari ini
+function setTodayToDateInput() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const todayStr = `${yyyy}-${mm}-${dd}`;
+  tanggalInput.value = todayStr;
+  tanggalInput.max = todayStr;
+}
+setTodayToDateInput();
+
+// ✅ Cek login user dan load data
+onAuthStateChanged(auth, (user) => {
   if (user) {
-    currentUserName = capitalize(user.email.split('@')[0]);
-    namaInput.value = currentUserName;
+    const email = user.email || '';
+    const displayName = email.split('@')[0];
+    currentUserName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+    usernameInput.value = currentUserName;
+    loadAbsen();
   } else {
-    currentUserName = '';
-    namaInput.value = '';
+    window.location.href = 'login.html';
   }
 });
 
-// Fungsi capitalize huruf awal
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-// Submit form absen
-absenForm.addEventListener('submit', async e => {
+// ✅ Submit form absen
+absenForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const nama = namaInput.value.trim();
-  const kegiatan = absenForm.querySelector('input[name="kegiatan"]:checked');
-  if (!kegiatan) {
-    return Swal.fire("Oops", "Silakan pilih jenis pekerjaan!", "warning");
+
+  const tanggal = tanggalInput.value;
+  const keterangan = keteranganInput.value.trim();
+  const kegiatan = [...kegiatanInputs].find(i => i.checked)?.value;
+
+  if (!tanggal || !keterangan || !kegiatan) {
+    return Swal.fire('Oops!', 'Lengkapi semua form!', 'warning');
   }
-  const tanggalRaw = parseTanggalInput(tanggalInput.value);
-  const tanggalFormatted = formatTanggalStr(tanggalRaw);
 
   try {
-    await addDoc(absenCol, {
-      nama,
-      kegiatan: kegiatan.value,
-      tanggal: tanggalFormatted,
-      timestamp: Timestamp.now(),
-      keterangan: "Hadir"
+    await addDoc(collection(db, 'absen'), {
+      nama: currentUserName,
+      tanggal,
+      keterangan,
+      kegiatan,
+      waktu: Timestamp.now(),
     });
 
-    Swal.fire("Berhasil", "Absen berhasil disimpan!", "success");
+    Swal.fire('Berhasil!', 'Absen berhasil disimpan.', 'success');
     absenForm.reset();
-    namaInput.value = currentUserName;
-    tanggalInput.value = todayISO;
+    usernameInput.value = currentUserName;
+    setTodayToDateInput(); // Reset tanggal
   } catch (err) {
-    console.error("Gagal simpan absen:", err);
-    Swal.fire("Gagal", "Terjadi kesalahan saat menyimpan absen.", "error");
+    Swal.fire('Error', err.message, 'error');
   }
 });
 
-// Load data realtime dan render DataTable
-function loadDataAbsen() {
-  const q = query(absenCol, orderBy("timestamp", "desc"));
+// ✅ Format waktu input
+function formatWaktu(timestamp) {
+  const date = timestamp?.toDate?.();
+  if (!date) return '-';
+  return new Intl.DateTimeFormat('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
 
-  onSnapshot(q, snapshot => {
-    let html = '';
-    let no = 1;
-    snapshot.forEach(docSnap => {
-      const d = docSnap.data();
-      const id = docSnap.id;
-      const tanggalInputStr = d.timestamp ? formatTanggalStr(d.timestamp.toDate()) : '-';
+// ✅ Format tanggal dari yyyy-mm-dd ke dd-mm-yyyy
+function formatTanggalYYYYMMDD(str) {
+  if (!str || typeof str !== 'string') return '-';
+  const [y, m, d] = str.split('-');
+  return `${d}-${m}-${y}`;
+}
 
-      html += `
-        <tr data-id="${id}">
-          <td>${no++}</td>
-          <td>${d.nama}</td>
-          <td>${d.kegiatan}</td>
-          <td>${d.tanggal}</td>
-          <td>${tanggalInputStr}</td>
-          <td><input type="checkbox" class="checkbox-item" data-id="${id}"></td>
-        </tr>
+// ✅ Realtime load absen
+// ... import tetap sama ...
+
+function loadAbsen() {
+  const q = query(collection(db, 'absen'), orderBy('waktu', 'desc'));
+  onSnapshot(q, (snapshot) => {
+    tableBody.innerHTML = '';
+
+    snapshot.forEach((docItem) => {
+      const data = docItem.data();
+      const tr = document.createElement('tr');
+
+      tr.innerHTML = `
+        <td></td> <!-- Kosong dulu, nanti diisi DataTables -->
+        <td>${data.nama}</td>
+        <td>${data.kegiatan}</td>
+        <td>
+          <textarea class="form-control small-textarea" readonly>${data.keterangan}</textarea>
+        </td>
+        <td>${formatTanggalYYYYMMDD(data.tanggal)}</td>
+        <td>${formatWaktu(data.waktu)}</td>
+        <td><input type="checkbox" data-id="${docItem.id}" /></td>
       `;
+
+      tableBody.appendChild(tr);
     });
 
-    tableBody.innerHTML = html;
-
-    if (dataTable) {
-      dataTable.destroy();
+    // ✅ Refresh atau inisialisasi DataTable ulang
+    if ($.fn.DataTable.isDataTable('#tabelAbsen')) {
+      $('#tabelAbsen').DataTable().destroy();
     }
 
-    dataTable = new DataTable('#tabelAbsen', {
-      responsive: true,
-      autoWidth: false,
+    const table = $('#tabelAbsen').DataTable({
       pageLength: parseInt(pageLengthSelect.value),
-      language: {
-        emptyTable: "Belum ada data absen",
-        search: "",
-        lengthMenu: "Tampilkan _MENU_ data",
-        info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-        paginate: {
-          first: "Awal",
-          last: "Akhir",
-          next: "›",
-          previous: "‹"
-        }
-      },
-      dom: 'rtp'
+      columnDefs: [
+        { orderable: false, targets: 0 } // Kolom No tidak bisa di-sort
+      ],
+      order: [] // Tidak ada sort default
     });
 
-    // Reset selectAll checkbox
-    selectAllCheckbox.checked = false;
+    // ✅ Update isi kolom No tiap kali table berubah (filter, sort, paging)
+    table.on('order.dt search.dt draw.dt', function () {
+      table.column(0, { search: 'applied', order: 'applied', page: 'current' })
+        .nodes().each((cell, i) => {
+          cell.innerHTML = i + 1;
+        });
+    }).draw();
   });
 }
 
-loadDataAbsen();
-
-// Select All checkbox behavior
+// ✅ Select All Checkbox Logic
+const selectAllCheckbox = document.getElementById('selectAll');
 selectAllCheckbox.addEventListener('change', () => {
-  const allCheckboxes = document.querySelectorAll('.checkbox-item');
-  allCheckboxes.forEach(cb => {
-    cb.checked = selectAllCheckbox.checked;
-  });
+  const checkboxes = document.querySelectorAll('#absenBody input[type="checkbox"]');
+  checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
 });
 
-// Change page length
-pageLengthSelect.addEventListener('change', () => {
-  if (dataTable) {
-    dataTable.page.len(parseInt(pageLengthSelect.value)).draw();
+// ✅ Hapus data yang dicentang
+const deleteBtn = document.getElementById('deleteSelectedBtn');
+deleteBtn.addEventListener('click', async () => {
+  const checkedBoxes = document.querySelectorAll('#absenBody input[type="checkbox"]:checked');
+
+  if (checkedBoxes.length === 0) {
+    return Swal.fire('Tidak ada data', 'Pilih data yang ingin dihapus.', 'info');
+  }
+
+  const konfirmasi = await Swal.fire({
+    title: 'Yakin ingin hapus?',
+    text: `${checkedBoxes.length} data akan dihapus secara permanen!`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, hapus',
+    cancelButtonText: 'Batal'
+  });
+
+  if (!konfirmasi.isConfirmed) return;
+
+  const hapusPromises = [];
+
+  checkedBoxes.forEach(cb => {
+    const docId = cb.dataset.id;
+    if (docId) {
+      const docRef = doc(db, 'absen', docId);
+      hapusPromises.push(deleteDoc(docRef));
+    }
+  });
+
+  try {
+    await Promise.all(hapusPromises);
+    Swal.fire('Berhasil', `${hapusPromises.length} data dihapus.`, 'success');
+    selectAllCheckbox.checked = false; // reset centang semua
+  } catch (err) {
+    Swal.fire('Error', 'Gagal menghapus data.', 'error');
   }
 });
 
-// Search realtime via Swal input dengan event input realtime
-searchBtn.addEventListener('click', () => {
-  Swal.fire({
-    title: 'Cari Nama, Kegiatan, atau Tanggal',
-    html: `<input type="text" id="swalInput" class="swal2-input" placeholder="Masukkan kata kunci pencarian...">`,
-    showCancelButton: true,
-    focusConfirm: false,
-    didOpen: () => {
-      const input = Swal.getPopup().querySelector('#swalInput');
-      input.focus();
+// ✅ Export data terpilih ke Excel
+const exportBtn = document.getElementById('exportExcelBtn');
+exportBtn.addEventListener('click', () => {
+  const checkedBoxes = document.querySelectorAll('#absenBody input[type="checkbox"]:checked');
 
-      // Ketika user ketik langsung search dan refresh table
+  if (checkedBoxes.length === 0) {
+    return Swal.fire('Tidak ada data', 'Pilih data yang ingin diekspor.', 'info');
+  }
+
+  const data = [];
+
+  checkedBoxes.forEach(cb => {
+    const row = cb.closest('tr');
+    const rowData = {
+      No: row.children[1].textContent,
+      Nama: row.children[2].textContent,
+      Kegiatan: row.children[3].textContent,
+      Jam: row.children[4].textContent,
+      Tanggal: row.children[5].textContent,
+      UploadBy: row.children[6].textContent,
+    };
+    data.push(rowData);
+  });
+
+  // Buat worksheet dan workbook
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Absen Terpilih");
+
+  // Simpan ke file Excel
+  XLSX.writeFile(workbook, "absen_terpilih.xlsx");
+
+  Swal.fire('Berhasil', `${data.length} data berhasil diexport ke Excel.`, 'success');
+});
+
+// ✅ Search Realtime SweetAlert2
+document.getElementById('searchIcon').addEventListener('click', () => {
+  Swal.fire({
+    title: 'Cari Absen',
+    input: 'text',
+    inputPlaceholder: 'Ketik untuk mencari...',
+    inputAttributes: {
+      autocapitalize: 'off',
+      autocorrect: 'off',
+    },
+    showCancelButton: true,
+    cancelButtonText: 'Tutup',
+    showConfirmButton: false,
+    didOpen: () => {
+      const input = Swal.getInput();
+
       input.addEventListener('input', () => {
-        const keyword = input.value.trim();
-        if (dataTable) {
-          dataTable.search(keyword).draw();
-        }
+        const keyword = input.value.toLowerCase();
+        const rows = document.querySelectorAll('#absenBody tr');
+
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(keyword) ? '' : 'none';
+        });
       });
     },
-    preConfirm: () => {
-      const input = Swal.getPopup().querySelector('#swalInput');
-      return input.value.trim();
-    }
   });
 });
 
-// Delete selected data realtime
-deleteSelectedBtn.addEventListener('click', async () => {
-  const selectedCheckboxes = document.querySelectorAll('.checkbox-item:checked');
-  if (selectedCheckboxes.length === 0) {
-    return Swal.fire("Tidak ada data terpilih", "", "info");
-  }
-  const jumlah = selectedCheckboxes.length;
 
-  const confirmResult = await Swal.fire({
-    title: `Hapus ${jumlah} data?`,
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Ya, hapus",
-    cancelButtonText: "Batal"
-  });
 
-  if (!confirmResult.isConfirmed) return;
 
-  try {
-    const hapusPromises = [];
-    selectedCheckboxes.forEach(cb => {
-      const id = cb.getAttribute('data-id');
-      if (id) {
-        hapusPromises.push(deleteDoc(doc(db, "absen", id)));
-      }
-    });
-    await Promise.all(hapusPromises);
-    Swal.fire("Dihapus!", `${jumlah} data berhasil dihapus.`, "success");
-  } catch (err) {
-    console.error("Gagal hapus data:", err);
-    Swal.fire("Gagal", "Terjadi kesalahan saat menghapus data.", "error");
-  }
-});
-
-// Export Excel hanya data yang dipilih
-exportExcelBtn.addEventListener('click', () => {
-  const selectedCheckboxes = document.querySelectorAll('.checkbox-item:checked');
-  if (selectedCheckboxes.length === 0) {
-    return Swal.fire("Tidak ada data terpilih untuk diexport", "", "info");
-  }
-
-  // Buat array data export
-  const exportData = [];
-  exportData.push(["No", "Nama", "Kegiatan", "Tanggal Absen", "Tanggal Input"]);
-
-  let no = 1;
-  selectedCheckboxes.forEach(cb => {
-    const tr = cb.closest('tr');
-    const cols = tr.querySelectorAll('td');
-    exportData.push([
-      no++,
-      cols[1].textContent.trim(),
-      cols[2].textContent.trim(),
-      cols[3].textContent.trim(),
-      cols[4].textContent.trim()
-    ]);
-  });
-
-  // Buat worksheet dan workbook XLSX
-  const ws = XLSX.utils.aoa_to_sheet(exportData);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Absen");
-
-  // Simpan file Excel dengan nama absen_TIMESTAMP.xlsx
-  XLSX.writeFile(wb, `absen_${Date.now()}.xlsx`);
+// ✅ Update panjang halaman jika dropdown berubah
+pageLengthSelect.addEventListener('change', () => {
+  $('#tabelAbsen').DataTable().page.len(parseInt(pageLengthSelect.value)).draw();
 });
