@@ -189,7 +189,6 @@ body {
     height: auto !important;
   }
 
-
 .table-responsive::-webkit-scrollbar {
   display: none;
 }
@@ -204,4 +203,38 @@ body {
 .table table-striped th *,
 .table table-striped td * {
   white-space: nowrap !important;
+}
+
+
+/* Saat belum terseleksi */
+.btn-check + .btn {
+  border: 2px solid #ccc;
+  background-color: #f8f9fa;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+/* Saat hover */
+
+/* Saat terseleksi */
+.btn-check:checked + .btn {
+  background-color: #0d6efd;
+  color: white;
+  border-color: #0a58ca;
+}
+.btn-check:checked + .btn.btn-outline-warning {
+  background-color: #ffc107;
+  color: black;
+  border-color: #e0a800;
+}
+.btn-check:checked + .btn.btn-outline-danger {
+  background-color: #dc3545;
+  color: white;
+  border-color: #bb2d3b;
+}
+
+
+div.dataTables_length,
+div.dataTables_filter {
+  display: none !important;
 }
