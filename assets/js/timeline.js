@@ -73,6 +73,9 @@ async function loadTimeline() {
           <p class="card-text mb-1">
             <i class="fas fa-money-bill"></i> Rp ${Number(item.nominal).toLocaleString()}
           </p>
+          <p class="card-text mb-1">
+          <i class="fas fa-wifi"></i> ${item.paket}
+          </p>
           <small class="${isWarning ? 'text-white' : 'text-muted'}">
             <i class="fas fa-calendar"></i> ${jatuhTempoStr}
             ${isToday ? '<span class="badge bg-dark ms-1">Hari Ini</span>' : ''}
