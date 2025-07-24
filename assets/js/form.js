@@ -49,7 +49,7 @@ document.getElementById("regWifiForm").addEventListener("submit", async function
 
   const paket = document.getElementById("paket").value;
   let nominal = 0;
-  if (paket === "15Mbps") nominal = 150000;
+  if (paket === "20Mbps") nominal = 150000;
   else if (paket === "40Mbps") nominal = 210000;
 
   const tglFormatted = document.getElementById("tglPemasangan").value.trim();
