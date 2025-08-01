@@ -238,3 +238,9 @@ div.dataTables_length,
 div.dataTables_filter {
   display: none !important;
 }
+
+
+#kinerjaTable td,
+#kinerjaTable th {
+  padding-left: 40px; /* atau lebih besar sesuai selera */
+}
