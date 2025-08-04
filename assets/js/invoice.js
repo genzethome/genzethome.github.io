@@ -73,10 +73,10 @@
     doc.text(`Tanggal Cetak: ${tanggalStr}`, 150, doc.lastAutoTable.finalY + 50);
 
     doc.setFontSize(10);
-    doc.text("Payment Information: a/n Abizar Alghifari", 14, doc.lastAutoTable.finalY + 10);
-    doc.text("140901003602535 (BRI)", 14, doc.lastAutoTable.finalY + 17);
-    doc.text("567-708-9917 (BCA)", 14, doc.lastAutoTable.finalY + 24);
-    doc.text("089636515580 (Dana, Shopee, Ovo, Gopay)", 14, doc.lastAutoTable.finalY + 31);
+    doc.text("Payment Information: a/n Abizar Alghifari", 14, doc.lastAutoTable.finalY + 5);
+    doc.text("140901003602535 (BRI)", 14, doc.lastAutoTable.finalY + 14);
+    doc.text("567-708-9917 (BCA)", 14, doc.lastAutoTable.finalY + 21);
+    doc.text("089636515580 (Dana, Shopee, Ovo, Gopay)", 14, doc.lastAutoTable.finalY + 28);
     doc.text("harap mengirimkan bukti pembayaran melalui whatsapp", 14, doc.lastAutoTable.finalY + 50);
 
     const pdfBlob = doc.output('blob');
