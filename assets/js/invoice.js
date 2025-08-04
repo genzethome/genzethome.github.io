@@ -74,9 +74,9 @@
 
     doc.setFontSize(10);
     doc.text("Payment Information: a/n Abizar Alghifari", 14, doc.lastAutoTable.finalY + 5);
-    doc.text("140901003602535 (BRI)", 14, doc.lastAutoTable.finalY + 14);
-    doc.text("567-708-9917 (BCA)", 14, doc.lastAutoTable.finalY + 21);
-    doc.text("089636515580 (Dana, Shopee, Ovo, Gopay)", 14, doc.lastAutoTable.finalY + 28);
+    doc.text("BCA : 567-708-9917", 14, doc.lastAutoTable.finalY + 16);
+    doc.text("BRI  : 140901003602535", 14, doc.lastAutoTable.finalY + 23);
+    doc.text("e-Wallet : 089636515580", 14, doc.lastAutoTable.finalY + 31);
     doc.text("harap mengirimkan bukti pembayaran melalui whatsapp", 14, doc.lastAutoTable.finalY + 50);
 
     const pdfBlob = doc.output('blob');
