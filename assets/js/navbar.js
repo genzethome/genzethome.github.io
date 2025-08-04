@@ -41,6 +41,7 @@ class MyNavbar extends HTMLElement {
                   </a>
                 </li>
                 <li class="nav-item"><a href="/pelanggan.html" class="nav-link text-dark"><i class="fa-solid fa-users"></i> Pelanggan</a></li>
+                <li class="nav-item"><a href="/freepass.html" class="nav-link text-dark"><i class="fa-solid fa-sack-dollar"></i> Akses Gratis</a></li>
                 <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link text-dark"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
               </ul>
             </div>
