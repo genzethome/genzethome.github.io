@@ -40,6 +40,7 @@ async function loadPelanggan() {
   snapshot.forEach(docSnap => {
     const d = docSnap.data();
     const alamatLengkap = formatAlamat(d);
+    const kodePelanggan = d.kode_pelanggan || (d.nama ? d.nama.replace(/\s/g, '') : "0000");
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -51,7 +52,7 @@ async function loadPelanggan() {
       <td><span class="badge bg-success">${d.paket || "-"}</span></td>
       <td>${formatRupiah(d.nominal)}</td>
       <td>${formatTgl(d.tglPemasangan)}</td>
-      <td><input type="checkbox" class="rowCheckbox" value="${docSnap.id}"></td>
+      <td><input type="checkbox" class="rowCheckbox" value="${docSnap.id}" data-kode="${kodePelanggan}"></td>
     `;
     tbody.appendChild(tr);
   });
@@ -148,7 +149,7 @@ document.getElementById("generatePdfBtn").addEventListener("click", async () => 
     const paket = row.cells[5].innerText.trim();
     const nominal = parseInt(row.cells[6].innerText.replace(/[^\d]/g, ''));
     const tglPemasangan = row.cells[7].innerText.trim().split("-").reverse().join("-");
-    const kodePelanggan = nama.replace(/\s/g, "") || "0000";
+    const kodePelanggan = cb.getAttribute("data-kode") || (nama ? nama.replace(/\s/g, "") : "0000");
 
     window.generateInvoice(nama, paket, alamat, kodePelanggan, nominal, tglPemasangan);
   });
@@ -171,7 +172,7 @@ document.getElementById("generateExcelBtn").addEventListener("click", async () =
   if (!confirm.isConfirmed) return;
 
   const rows = [];
-  rows.push(["No", "Nama", "Alamat", "Email", "Telepon", "Paket", "Nominal", "Tanggal Pemasangan"]);
+  rows.push(["No", "Nama", "Alamat", "Email", "Telepon", "Paket", "Nominal", "Tanggal Pemasangan", "Kode Pelanggan"]);
 
   selected.forEach((cb, i) => {
     const row = cb.closest("tr");
@@ -182,9 +183,10 @@ document.getElementById("generateExcelBtn").addEventListener("click", async () =
     const paket = row.cells[5].innerText.trim();
     const nominal = row.cells[6].innerText.trim();
     const tglPemasangan = row.cells[7].innerText.trim();
+    const kodePelanggan = cb.getAttribute("data-kode") || (nama ? nama.replace(/\s/g, "") : "0000");
 
     rows.push([
-      i + 1, nama, alamat, email, nohp, paket, nominal, tglPemasangan
+      i + 1, nama, alamat, email, nohp, paket, nominal, tglPemasangan, kodePelanggan
     ]);
   });
 
