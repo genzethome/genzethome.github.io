@@ -242,5 +242,6 @@ div.dataTables_filter {
 
 #kinerjaTable td,
 #kinerjaTable th {
-  padding-left: 40px; /* atau lebih besar sesuai selera */
+  padding-left: 20px; /* atau lebih besar sesuai selera */
 }
+
