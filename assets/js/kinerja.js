@@ -53,17 +53,38 @@ async function ambilDataKinerja() {
   return kinerja;
 }
 
-// Hitung power berdasarkan bobot: hadir 20%, modal 80%
+// Hitung power proporsional agar total 100%
 function hitungPower(data) {
   const maxHadir = Math.max(...Object.values(data).map(d => d.hadir));
   const maxModal = Math.max(...Object.values(data).map(d => d.modal));
 
-  return Object.fromEntries(Object.entries(data).map(([nama, val]) => {
+  // Hitung skor mentah
+  const skorMentah = Object.fromEntries(Object.entries(data).map(([nama, val]) => {
     const hadirScore = maxHadir ? val.hadir / maxHadir : 0;
     const modalScore = maxModal ? val.modal / maxModal : 0;
-    const power = Math.round((hadirScore * 0.30 + modalScore * 0.70) * 100);
+    const score = hadirScore * 0.30 + modalScore * 0.70;
+    return [nama, { ...val, score }];
+  }));
+
+  const totalScore = Object.values(skorMentah).reduce((acc, val) => acc + val.score, 0) || 1;
+
+  // Hitung power awal
+  let powerFinal = Object.fromEntries(Object.entries(skorMentah).map(([nama, val]) => {
+    const power = Math.round((val.score / totalScore) * 100);
     return [nama, { ...val, power }];
   }));
+
+  // Koreksi pembulatan agar total tetap 100%
+  let totalPower = Object.values(powerFinal).reduce((acc, val) => acc + val.power, 0);
+  const selisih = 100 - totalPower;
+
+  if (selisih !== 0) {
+    const urut = Object.entries(powerFinal).sort(([, a], [, b]) => b.power - a.power);
+    const target = urut[0][0]; // Ambil yang power-nya paling besar
+    powerFinal[target].power += selisih;
+  }
+
+  return powerFinal;
 }
 
 // Tampilkan tabel HTML
