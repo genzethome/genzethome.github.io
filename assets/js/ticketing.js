@@ -18,12 +18,12 @@
   // ========================
   const ALLOWED_EMAILS = ["firzi@genzet.com", "abizar@genzet.com"];
   const TEKNISI = [
-    { name: "abizar", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
-    { name: "baruna", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
+    { name: "abizar", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/IMG-20250803-WA0021.jpg" },
+    { name: "baruna", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/528661156_18062409395257722_1748945579084510674_n.jpg" },
     { name: "firzi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
     { name: "jerry", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
     { name: "mahija", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
-    { name: "maulana", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
+    { name: "maulana", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/IMG_20250611_200410.jpg" },
     { name: "yuda", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/Screenshot%202025-08-20%20141857.png" },
     { name: "zahdan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
   ];
