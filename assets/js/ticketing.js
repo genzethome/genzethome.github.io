@@ -93,11 +93,11 @@ async function loadPelanggan() {
 
     if (snapshot.empty) {
       console.warn("⚠️ Collection pelanggan kosong!");
-      pelangganSelect.innerHTML = `<option value="">-- Tidak ada pelanggan --</option>`;
+      pelangganSelect.innerHTML = `<option value="">Tidak ada pelanggan</option>`;
       return;
     }
 
-    pelangganSelect.innerHTML = `<option value="">-- Pilih Pelanggan --</option>`;
+    pelangganSelect.innerHTML = `<option value="">Pilih Pelanggan</option>`;
     snapshot.forEach((doc) => {
       console.log("📄 Data pelanggan:", doc.id, doc.data());
       const data = doc.data();
