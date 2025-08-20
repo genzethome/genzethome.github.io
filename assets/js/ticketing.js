@@ -172,7 +172,7 @@ const outputPre = document.createElement("pre");
 outputPre.style.background = "#f8f9fa";
 outputPre.style.padding = "1rem";
 outputPre.style.borderRadius = "0.5rem";
-outputPre.style.whiteSpace = "pre-wrap"; // wrap teks jika panjang
+outputPre.style.whiteSpace = "pre"; // wrap teks jika panjang
 outputPre.style.display = "none"; // hide awal
 
 // tombol salin
@@ -255,17 +255,22 @@ form.addEventListener("submit", async (e) => {
     Swal.fire("Berhasil!", "Ticket berhasil dibuat.", "success");
 
     // Generate template output
-    outputPre.textContent = `Genzet Home
+   outputPre.textContent = 
+`\`\`\`
+Genzet Home
 Kunjungan Teknisi
 ===========================
 
-Customer: ${pelangganData.nama}
-No Tiket: #${nextTicketNumber}
-Alamat  : ${pelangganData.alamat || "-"}
-Kendala : ${problem}
-Aksi    : -
-Teknisi : ${selected.join(", ")}
-Jadwal  : ${startTime}`; // otomatis Hari, DD/MM/YYYY
+Customer  : ${pelangganData.nama}
+No Tiket  : #${nextTicketNumber}
+Alamat    : ${pelangganData.alamat || "-"}
+Kendala   : ${problem}
+Aksi      : -
+Teknisi   : ${selected.join(", ")}
+Jadwal    : ${startTime}
+\`\`\``;
+
+
 
     // tampilkan <pre> dan tombol copy
     outputPre.style.display = "block";
