@@ -47,6 +47,18 @@ body {
   scrollbar-width: none;     /* Firefox */
 }
 
+/* default: tampil semua teks */
+.navbar .nav-text {
+  display: inline;
+}
+
+/* desktop / tablet: hide teks, tampil icon saja */
+@media (min-width: 768px) {
+  .navbar .nav-text {
+    display: none;
+  }
+}
+
       .progress {
         height: 20px;
       }
@@ -243,5 +255,27 @@ div.dataTables_filter {
 #kinerjaTable td,
 #kinerjaTable th {
   padding-left: 20px; /* atau lebih besar sesuai selera */
+}
+
+/* Desktop & tablet (min-width 768px) */
+@media (min-width: 768px) {
+  /* Hide text if ingin, optional */
+  .nav-text {
+    display: none;
+  }
+
+  /* Tambahkan outline/border pada icon saat hover/focus */
+  .navbar-nav .nav-item .nav-link i {
+    display: inline-block;
+    padding: 0.4rem;
+    border-radius: 0.25rem;
+    
+  }
+
+  .navbar-nav .nav-item .nav-link:hover i,
+  .navbar-nav .nav-item .nav-link:focus i {
+    border: 1px solid #6c757d; /* border abu-abu */
+    background-color: #f8f9fa; /* optional, agar lebih jelas */
+  }
 }
 
