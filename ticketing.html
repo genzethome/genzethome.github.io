@@ -61,15 +61,19 @@
         <i class="fa-solid fa-ticket"></i> Ticketing
       </div>
       <div class="card-body">
+        <div class="mb-3">
+  <input type="text" id="ticketNumber" class="form-control" placeholder="#0" disabled>
+</div>
+
         <form id="ticketForm">
           <!-- Problem -->
           <div class="mb-3">
-            <textarea id="problemDesc" class="form-control" rows="3" placeholder="ketikan masalah yang terjadi..." required></textarea>
+            <textarea id="problemDesc" class="form-control" rows="3" placeholder="ketikan keluhan pelanggan"></textarea>
           </div>
 
           <!-- Pilih pelanggan -->
           <div class="mb-3">
-            <select id="pelanggan" class="form-select" required>
+            <select id="pelanggan" class="form-select">
               <option value="">Pilih Pelanggan</option>
             </select>
           </div>
@@ -79,20 +83,14 @@
             <div id="techniciansList" class="tech-scroll mb-2">
               <!-- card teknisi dirender via JS -->
             </div>
-            <small class="text-muted">choose your hero.</small>
+            <small class="text-muted">Pilih teknisi yang tersedia.</small>
           </div>
 
           <!-- Waktu -->
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="startTime" class="form-label">start</label>
-              <input type="datetime-local" id="startTime" class="form-control" required />
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="endTime" class="form-label">end</label>
-              <input type="datetime-local" id="endTime" class="form-control" required />
-            </div>
-          </div>
+         <div class="row">
+  <div class="col-md-6 mb-3">
+    <input type="date" id="startTime" class="form-control" />
+  </div>
 
           <div class="text-start">
             <button type="submit" class="btn btn-success">
@@ -103,10 +101,15 @@
       </div>
     </div>
  
+    
+
 
 </div>
   <!-- Libs -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
   <!-- App scripts -->
   <script type="module" src="assets/js/firebase-init.js"></script>
