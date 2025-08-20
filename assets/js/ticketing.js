@@ -17,13 +17,13 @@ import {
 // ========================
 const ALLOWED_EMAILS = ["firzi@genzet.com", "abizar@genzet.com"];
 const TEKNISI = [
-  { name: "abi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
+  { name: "abizar", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
   { name: "baruna", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
   { name: "firzi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
   { name: "jerry", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
   { name: "mahija", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
   { name: "maulana", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
-  { name: "yuda", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
+  { name: "yuda", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/Screenshot%202025-08-20%20141857.png" },
   { name: "zahdan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
 ];
 
@@ -93,11 +93,11 @@ async function loadPelanggan() {
 
     if (snapshot.empty) {
       console.warn("⚠️ Collection pelanggan kosong!");
-      pelangganSelect.innerHTML = `<option value="">Tidak ada pelanggan</option>`;
+      pelangganSelect.innerHTML = `<option value="">-- Tidak ada pelanggan --</option>`;
       return;
     }
 
-    pelangganSelect.innerHTML = `<option value="">Pilih Pelanggan</option>`;
+    pelangganSelect.innerHTML = `<option value="">-- Pilih Pelanggan --</option>`;
     snapshot.forEach((doc) => {
       console.log("📄 Data pelanggan:", doc.id, doc.data());
       const data = doc.data();
