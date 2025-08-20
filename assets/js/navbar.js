@@ -28,22 +28,24 @@ class MyNavbar extends HTMLElement {
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a href="/index.html" class="nav-link text-dark"><i class="fa-solid fa-chart-line"></i> Laporan</a></li>
-                <li class="nav-item"><a href="/absen.html"class="nav-link text-dark"><i class="fa-solid fa-user-check"></i> Absen</a></li>
-                <li class="nav-item"><a href="/pemasukan.html" class="nav-link text-dark"><i class="fa-solid fa-wallet"></i> Pemasukan</a></li>
-                <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark"><i class="fa-solid fa-money-bill-wave"></i> Pengeluaran</a></li>
-                <li class="nav-item"><a href="/assets.html" class="nav-link text-dark"><i class="fa-solid fa-box-archive"></i> Assets</a></li>
-                <li class="nav-item"><a href="/form.html" class="nav-link text-dark"><i class="fa-solid fa-file-lines"></i> Formulir</a></li>
-                <li class="nav-item">
-                  <a href="/approval.html" class="nav-link text-dark">
-                    <i class="fa-solid fa-circle-check"></i> Approval
-                    <span id="approvalBadge" class="badge rounded-pill bg-danger ms-1 d-none">1</span>
-                  </a>
-                </li>
-                <li class="nav-item"><a href="/pelanggan.html" class="nav-link text-dark"><i class="fa-solid fa-users"></i> Pelanggan</a></li>
-                <li class="nav-item"><a href="/freepass.html" class="nav-link text-dark"><i class="fa-solid fa-sack-dollar"></i> Akses Gratis</a></li>
-                <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link text-dark"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-              </ul>
+  <li class="nav-item"><a href="/index.html" class="nav-link text-dark"><i class="fa-solid fa-chart-line"></i> <span class="nav-text">Laporan</span></a></li>
+  <li class="nav-item"><a href="/absen.html" class="nav-link text-dark"><i class="fa-solid fa-user-check"></i> <span class="nav-text">Absen</span></a></li>
+  <li class="nav-item"><a href="/pemasukan.html" class="nav-link text-dark"><i class="fa-solid fa-wallet"></i> <span class="nav-text">Pemasukan</span></a></li>
+  <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark"><i class="fa-solid fa-money-bill-wave"></i> <span class="nav-text">Pengeluaran</span></a></li>
+  <li class="nav-item"><a href="/assets.html" class="nav-link text-dark"><i class="fa-solid fa-box-archive"></i> <span class="nav-text">Assets</span></a></li>
+  <li class="nav-item"><a href="/form.html" class="nav-link text-dark"><i class="fa-solid fa-file-lines"></i> <span class="nav-text">Formulir</span></a></li>
+  <li class="nav-item">
+    <a href="/approval.html" class="nav-link text-dark">
+      <i class="fa-solid fa-circle-check"></i> <span class="nav-text">Approval</span>
+      <span id="approvalBadge" class="badge rounded-pill bg-danger ms-1 d-none">1</span>
+    </a>
+  </li>
+  <li class="nav-item"><a href="/ticketing.html" class="nav-link text-dark"><i class="fa-solid fa-ticket"></i> <span class="nav-text">Ticket</span></a></li>
+  <li class="nav-item"><a href="/pelanggan.html" class="nav-link text-dark"><i class="fa-solid fa-users"></i> <span class="nav-text">Pelanggan</span></a></li>
+  <li class="nav-item"><a href="/freepass.html" class="nav-link text-dark"><i class="fa-solid fa-sack-dollar"></i> <span class="nav-text">Akses Gratis</span></a></li>
+  <li class="nav-item"><a href="#" id="logoutBtn" class="nav-link text-dark"><i class="fa-solid fa-right-from-bracket"></i> <span class="nav-text">Logout</span></a></li>
+</ul>
+
             </div>
           </div>
         </nav>
