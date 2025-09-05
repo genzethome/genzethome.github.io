@@ -5,11 +5,14 @@
   import {
     collection,
     addDoc,
+    getDoc,
     serverTimestamp,
     getDocs,
+    doc,
     query,
     orderBy,
-    limit
+    limit,
+    updateDoc
   } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
   import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
@@ -18,13 +21,13 @@
   // ========================
   const ALLOWED_EMAILS = ["firzi@genzet.com", "abizar@genzet.com"];
   const TEKNISI = [
-    { name: "abizar", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/IMG-20250803-WA0021.jpg" },
-    { name: "baruna", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/528661156_18062409395257722_1748945579084510674_n.jpg" },
+    { name: "abizar", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
+    { name: "baruna", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
     { name: "firzi", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
     { name: "jerry", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
     { name: "mahija", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
-    { name: "maulana", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/IMG_20250611_200410.jpg" },
-    { name: "yuda", img: "https://raw.githubusercontent.com/genzethome/genzethome.github.io/refs/heads/main/assets/img/Screenshot%202025-08-20%20141857.png" },
+    { name: "maulana", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
+    { name: "yuda", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
     { name: "zahdan", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTCxmava22M50RykJabRdl8BmYtv7NVQtNcd94AS9OC2x_CEKUNjjNGzwSuyamPprP2Ok&usqp=CAU" },
   ];
 
@@ -219,8 +222,9 @@ form.addEventListener("submit", async (e) => {
   const selected = getSelectedTechnicians();
   const pelangganId = pelangganSelect.value.trim();
   const problem = document.getElementById("problemDesc").value.trim();
+  const aksi = document.getElementById("aksiInput").value.trim();   // <-- ambil Aksi
   const startTimeRaw = document.getElementById("startTime").value;
-  const startTime = formatDateWithDay(startTimeRaw);  // <-- pakai helper baru
+  const startTime = formatDateWithDay(startTimeRaw);
 
   if (!pelangganId) { Swal.fire("Oops!", "Pelanggan wajib dipilih.", "warning"); return; }
   if (!problem) { Swal.fire("Oops!", "Deskripsi problem wajib diisi.", "warning"); return; }
@@ -232,30 +236,34 @@ form.addEventListener("submit", async (e) => {
   const nextTicketNumber = await updateTicketNumber();
 
   try {
-    // Ambil data pelanggan untuk alamat dan nama
+    // Ambil data pelanggan
     const pelangganRef = collection(db, "pelanggan");
     const snapshot = await getDocs(pelangganRef);
-    let pelangganData = { nama: pelangganId, alamat: "-" }; // default
+    let pelangganData = { nama: pelangganId, alamat: "-" };
     snapshot.forEach(doc => {
       if (doc.id === pelangganId) {
         pelangganData = doc.data();
       }
     });
 
+    // Simpan tiket ke Firestore
     await addDoc(collection(db, "tickets"), {
       ticketNumber: nextTicketNumber,
       createdBy: user.email,
-      pelanggan: pelangganId,
+      pelanggan: pelangganData.nama,        // nama pelanggan
+      alamat: pelangganData.alamat || "-",  // alamat pelanggan
       problem,
+      aksi: aksi || "-",                    // <-- field aksi
       technicians: selected,
       startTime,
       createdAt: serverTimestamp(),
     });
 
     Swal.fire("Berhasil!", "Ticket berhasil dibuat.", "success");
+    loadTicketsTable(); // reload tabel
 
-    // Generate template output
-   outputPre.textContent = 
+    // Template output
+    outputPre.textContent =
 `\`\`\`
 Genzet Home
 Kunjungan Teknisi
@@ -265,23 +273,152 @@ Customer  : ${pelangganData.nama}
 No Tiket  : #${nextTicketNumber}
 Alamat    : ${pelangganData.alamat || "-"}
 Kendala   : ${problem}
-Aksi      : -
+Aksi      : ${aksi || "-"}
 Teknisi   : ${selected.join(", ")}
 Jadwal    : ${startTime}
 \`\`\``;
 
-
-
-    // tampilkan <pre> dan tombol copy
     outputPre.style.display = "block";
     copyBtn.style.display = "block";
 
-    // reset form + unselect teknisi
     form.reset();
     document.querySelectorAll(".tech-card.selected").forEach(el => el.classList.remove("selected"));
     await updateTicketNumber();
   } catch (err) {
     console.error("Gagal menambah ticket:", err);
     Swal.fire("Gagal!", err.message || "Terjadi kesalahan.", "error");
+  }
+});
+
+// ========================
+//  INISIALISASI DATATABLE
+// ========================
+let ticketsTable;
+
+$(document).ready(function () {
+  // Inisialisasi DataTable
+ticketsTable = $('#tableTickets').DataTable({
+  paging: true,
+  searching: true,
+  info: true,
+  order: [] // biar urut sesuai Firestore (createdAt desc)
+});
+
+
+  // Load data pertama kali
+  loadTicketsTable();
+});
+
+// ========================
+//  LOAD TABEL
+// ========================
+async function loadTicketsTable() {
+  ticketsTable.clear();
+
+  const ticketsRef = collection(db, "tickets");
+  const q = query(ticketsRef, orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+
+  console.log("Jumlah tiket:", snapshot.size); // debug
+
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+
+    ticketsTable.row.add([
+      `<span class="view-ticket" data-id="${doc.id}" style="cursor:pointer;">
+        #${data.ticketNumber}
+      </span>`,
+      `<span class="view-ticket" data-id="${doc.id}" style="cursor:pointer;">
+        ${data.pelanggan || "-"}
+      </span>`,
+      `<span class="view-ticket" data-id="${doc.id}" style="cursor:pointer;">
+        ${data.alamat || "-"}
+      </span>`,
+      `<span class="view-ticket" data-id="${doc.id}" style="cursor:pointer;">
+        ${data.problem || "-"}
+      </span>`,
+      `<span class="aksi-cell" data-id="${doc.id}" style="cursor:pointer;">
+        ${data.aksi || "-"}
+      </span>`,
+      `<span class="view-ticket" data-id="${doc.id}" style="cursor:pointer;">
+        ${(data.technicians || []).join(", ")}
+      </span>`,
+      `<span class="view-ticket" data-id="${doc.id}" style="cursor:pointer;">
+        ${data.startTime || "-"}
+      </span>`,
+    ]);
+  });
+
+  ticketsTable.draw();
+}
+
+// ========================
+//  EVENT: EDIT AKSI
+// ========================
+$('#tableTickets tbody').on('click', 'span.aksi-cell', async function () {
+  const ticketId = $(this).data("id");
+  if (!ticketId) return;
+
+  const ref = doc(db, "tickets", ticketId);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+
+  // SweetAlert form input
+  const { value: aksiBaru } = await Swal.fire({
+    title: `Edit Aksi - Tiket #${data.ticketNumber}`,
+    input: "text",
+    inputValue: data.aksi || "",
+    showCancelButton: true,
+    confirmButtonText: "Simpan",
+    cancelButtonText: "Batal"
+  });
+
+  if (aksiBaru !== null && aksiBaru !== undefined) {
+  await updateDoc(ref, { aksi: aksiBaru.trim() || "-" });
+    Swal.fire("Berhasil", "Aksi berhasil diperbarui.", "success");
+    await loadTicketsTable(); // reload tabel
+  }
+});
+
+
+// ========================
+//  VIEW DETAIL TIKET
+// ========================
+$(document).on("click", ".view-ticket", async function () {
+  const ticketId = $(this).data("id");
+  const docSnap = await getDoc(doc(db, "tickets", ticketId));
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+
+    const ticketText = 
+`\`\`\`
+Genzet Home
+Kunjungan Teknisi
+===========================
+
+Customer  : ${data.pelanggan || "-"}
+No Tiket  : #${data.ticketNumber}
+Alamat    : ${data.alamat || "-"}
+Kendala   : ${data.problem || "-"}
+Aksi      : ${data.aksi || "-"}
+Teknisi   : ${(data.technicians || []).join(", ")}
+Jadwal    : ${data.startTime || "-"}
+\`\`\``;
+
+    Swal.fire({
+      title: "Detail Tiket",
+      html: `<pre style="text-align:left; white-space:pre-wrap;">${ticketText}</pre>`,
+      showCancelButton: true,
+      confirmButtonText: "Copy",
+      cancelButtonText: "Tutup",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigator.clipboard.writeText(ticketText);
+        Swal.fire("Copied!", "Teks berhasil disalin.", "success");
+      }
+    });
   }
 });
