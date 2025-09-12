@@ -272,10 +272,18 @@ div.dataTables_filter {
     
   }
 
-  .navbar-nav .nav-item .nav-link:hover i,
-  .navbar-nav .nav-item .nav-link:focus i {
-    border: 1px solid #6c757d; /* border abu-abu */
-    background-color: #f8f9fa; /* optional, agar lebih jelas */
-  }
+.navbar-nav .nav-item .nav-link:hover i,
+.navbar-nav .nav-item .nav-link:focus i {
+  background-color: var(--bs-success);
+  color: #fff;
+  border: none;
+
+  border-radius: 6px;             /* tetap curve */
+  box-shadow: 0 0 0 4px var(--bs-success); /* seolah area lebih besar */
+  transition: all 0.2s ease;
+}
+
+
+
 }
 
