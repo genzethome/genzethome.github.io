@@ -272,18 +272,303 @@ div.dataTables_filter {
     
   }
 
-.navbar-nav .nav-item .nav-link:hover i,
-.navbar-nav .nav-item .nav-link:focus i {
-  background-color: var(--bs-success);
-  color: #fff;
-  border: none;
+body {
+  background-color: #f8f9fa;
+}
 
-  border-radius: 6px;             /* tetap curve */
-  box-shadow: 0 0 0 4px var(--bs-success); /* seolah area lebih besar */
-  transition: all 0.2s ease;
+.main-content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background: #fff;
+  border-radius: .5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dataTables_info,
+.dataTables_paginate {
+  padding: 0.5rem 1rem;
+}
+
+.timeline-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+}
+
+#timeline > .card {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+/* Sembunyikan scrollbar (browser modern) */
+.timeline-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.timeline-wrapper {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* default: tampil semua teks */
+.navbar .nav-text {
+  display: inline;
+}
+
+/* desktop / tablet: hide teks, tampil icon saja */
+@media (min-width: 768px) {
+  .navbar .nav-text {
+    display: none;
+  }
+}
+
+      .progress {
+        height: 20px;
+      }
+
+      .progress-bar {
+        font-size: 0;
+        transition: width 0.8s ease;
+      }
+
+      td {
+        vertical-align: middle;
+      }
+
+      table {
+        table-layout: auto;
+        width: 100%;
+      }
+
+      .swal2-popup {
+        overflow: hidden !important;
+      }
+
+      .timeline-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+}
+
+#timeline > .card {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+/* Sembunyikan scrollbar (browser modern) */
+.timeline-wrapper::-webkit-scrollbar {
+  display: none;
+}
+.timeline-wrapper {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+/* Sembunyikan scrollbar (browser modern) */
+.card-body p-0 table-responsive::-webkit-scrollbar {
+  display: none;
+}
+.card-body p-0 table-responsive {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;     /* Firefox */
 }
 
 
+
+
+      .progress {
+        height: 20px;
+      }
+
+      .progress-bar {
+        font-size: 0;
+        transition: width 0.8s ease;
+      }
+
+      td {
+        vertical-align: middle;
+      }
+
+      table {
+        table-layout: auto;
+        width: 100%;
+      }
+
+      .swal2-popup {
+        overflow: hidden !important;
+      }
+
+    .small-textarea {
+      resize: none;
+      overflow: auto;
+      height: 2.2em;
+      min-width: 40px;
+      font-size: 0.85rem;
+      background-color: #f8f9fa;
+      border-color: #ced4da;
+      cursor: default;
+      scrollbar-width: none;
+    }
+
+    .small-textarea::-webkit-scrollbar {
+      display: none;
+    }
+
+    
+
+    #approvalBadge {
+  font-size: 0.65rem;
+  padding: 0.3em 0.55em;
+}
+
+.nav-item .badge {
+  transform: translate(-20%, -40%);
+}
+
+
+   .login-container {
+      max-width: 400px; margin: 5rem auto; padding: 2rem;
+      background: #fff; border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    #tablePelanggan td {
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+#tablePelanggan textarea.addr {
+  width: 250px;
+  height: 70px;
+  resize: none;
+  overflow: auto;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+
+  .chart-wrapper {
+    max-width: 500px;
+    min-width: 300px;
+    width: 100%;
+  }
+
+  .chart-wrapper-pie {
+    max-width: 350px; /* Pie lebih kecil sedikit */
+  }
+
+  .chart-wrapper canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+.table-responsive::-webkit-scrollbar {
+  display: none;
+}
+#tablePemasukan th,
+#tablePemasukan td,
+#tablePemasukan th *,
+#tablePemasukan td * {
+  white-space: nowrap !important;
+}
+.table table-striped th,
+.table table-striped td,
+.table table-striped th *,
+.table table-striped td * {
+  white-space: nowrap !important;
+}
+
+
+/* Saat belum terseleksi */
+.btn-check + .btn {
+  border: 2px solid #ccc;
+  background-color: #f8f9fa;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+/* Saat hover */
+
+/* Saat terseleksi */
+.btn-check:checked + .btn {
+  background-color: #0d6efd;
+  color: white;
+  border-color: #0a58ca;
+}
+.btn-check:checked + .btn.btn-outline-warning {
+  background-color: #ffc107;
+  color: black;
+  border-color: #e0a800;
+}
+.btn-check:checked + .btn.btn-outline-danger {
+  background-color: #dc3545;
+  color: white;
+  border-color: #bb2d3b;
+}
+
+
+div.dataTables_length,
+div.dataTables_filter {
+  display: none !important;
+}
+
+
+#kinerjaTable td,
+#kinerjaTable th {
+  padding-left: 20px; /* atau lebih besar sesuai selera */
+}
+
+/* Desktop & tablet (min-width 768px) */
+@media (min-width: 768px) {
+  /* Hide text if ingin, optional */
+  .nav-text {
+    display: none;
+  }
+
+    /* Default icon styling */
+  .navbar-nav .nav-item .nav-link i {
+    display: inline-flex;            /* biar bisa center horizontal + vertical */
+    align-items: center;
+    justify-content: center;
+    width: 32px;                     /* fix ukuran kotak */
+    height: 32px;
+    font-size: 18px;
+    line-height: 1;
+    border-radius: 0.25rem;
+    text-align: center;
+    vertical-align: middle;
+    transition: all 0.2s ease;       /* animasi halus */
+  }
+
+  /* Hover / focus effect */
+  .navbar-nav .nav-item .nav-link:hover i,
+  .navbar-nav .nav-item .nav-link:focus i {
+    background-color: var(--bs-success);
+    color: #fff;
+    border-radius: 6px;              /* tetap curve */
+    outline-offset: 2px;             /* jarak outline (kalau pakai outline) */
+  }
+
+  /* Icon aktif */
+  .navbar-nav .nav-link i.active-icon {
+    border-bottom: 3px solid var(--bs-success);
+    color: var(--bs-success);
+    pointer-events: none;            /* biar ga bisa di klik ulang */
+  }
+}
 
 }
 
