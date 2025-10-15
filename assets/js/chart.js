@@ -1,7 +1,7 @@
 import { db } from "./firebase-init.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-const targetNames = ["abi", "baruna", "firzi", "jerry", "mahija", "maulana", "yuda","zahdan"];
+const targetNames = ["abi", "baruna", "firzi", "jerry", "yuda"];
 
 async function ambilData() {
   const hasil = {};
