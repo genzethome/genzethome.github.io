@@ -6,7 +6,7 @@ import {
 } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js';
 
 const TABEL_BODY = document.getElementById('kinerjaBody');
-const USERS = ["abi", "baruna", "firzi", "jerry", "mahija", "maulana", "yuda", "zahdan"];
+const USERS = ["abi", "baruna", "firzi", "jerry", "yuda"];
 
 // Normalisasi nama input jadi lowercase + ganti nama panjang
 const normalisasiNama = (nama) =>
