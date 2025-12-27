@@ -91,15 +91,48 @@ function hitungPower(data) {
 function renderTabel(data) {
   const dataArray = Object.entries(data).sort(([, a], [, b]) => b.power - a.power);
 
-  TABEL_BODY.innerHTML = dataArray.map(([nama, val]) => `
+  TABEL_BODY.innerHTML = dataArray.map(([nama, val], index) => {
+    // Tentukan warna progress bar berdasarkan power
+    let progressColor = 'bg-success';
+    if (val.power < 30) progressColor = 'bg-danger';
+    else if (val.power < 70) progressColor = 'bg-warning';
+
+    // Tentukan Icon Rank
+    let rankIcon = '';
+    if (index === 0) {
+      rankIcon = '<i class="fas fa-trophy text-warning fa-lg"></i>'; // Juara 1 (Emas)
+    } else if (index === 1) {
+      rankIcon = '<i class="fas fa-medal fa-lg" style="color: #C0C0C0;"></i>'; // Juara 2 (Perak)
+    } else if (index === 2) {
+      rankIcon = '<i class="fas fa-medal fa-lg" style="color: #CD7F32;"></i>'; // Juara 3 (Perunggu)
+    } else {
+      rankIcon = '<i class="fas fa-user-circle text-secondary fa-lg align-middle"></i>'; // Sisanya
+    }
+
+    return `
     <tr>
-      <td></td> <!-- Nomor: akan diisi ulang oleh DataTables -->
-      <td class="text-start">${kapitalAwal(nama)}</td>
-      <td>${val.hadir}</td>
-      <td>${formatRupiah(val.modal)}</td>
-      <td><strong>${val.power}%</strong></td>
+      <td class="align-middle text-center fw-bold">${index + 1}</td> <!-- Nomor Fixed -->
+      <td class="text-start align-middle">
+        <span class="fw-semibold text-dark">${kapitalAwal(nama)}</span>
+      </td>
+      <td class="align-middle text-center">
+        ${rankIcon}
+      </td>
+      <td class="align-middle text-muted fw-medium">${val.hadir}</td>
+      <td class="align-middle fw-medium text-dark">${formatRupiah(val.modal)}</td>
+      <td class="align-middle">
+        <div class="d-flex flex-column justify-content-center h-100">
+            <div class="d-flex justify-content-between mb-1" style="font-size: 0.75rem;">
+                <span class="fw-bold">${val.power}%</span>
+            </div>
+            <div class="progress shadow-sm" style="height: 6px; border-radius: 10px;">
+                <div class="progress-bar ${progressColor}" role="progressbar" style="width: ${val.power}%; border-radius: 10px;" aria-valuenow="${val.power}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+      </td>
     </tr>
-  `).join("");
+  `;
+  }).join("");
 }
 
 // Jalankan semua proses
@@ -110,21 +143,14 @@ async function inisialisasi() {
 
   // Inisialisasi DataTable
   const table = $('#kinerjaTable').DataTable({
-    columnDefs: [
-      { orderable: false, searchable: false, targets: 0 },
-    ],
-    order: [[4, 'desc']],
+    ordering: false, // Disable user sorting (removes arrows)
     paging: false,
-    info: false
+    info: false,
+    searching: false // Optional: also remove search if not needed, but safe to keep. User asked for sort only.
   });
 
-  // Isi ulang nomor urut setelah sort/filter
-  table.on('order.dt search.dt', function () {
-    table.column(0, { search: 'applied', order: 'applied' })
-      .nodes().each((cell, i) => {
-        cell.innerHTML = i + 1;
-      });
-  }).draw();
+  // No callback needed for reordering/numbering since it's now handled by renderTabel order
+  table.draw();
 }
 
 inisialisasi();
