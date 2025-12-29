@@ -1,21 +1,56 @@
 // kinerja.js
-import { db } from './firebase-init.js';
+import { db, auth } from './firebase-init.js';
 import {
   collection,
   getDocs,
 } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js';
 
 const TABEL_BODY = document.getElementById('kinerjaBody');
+const TABEL_GAJI_BODY = document.getElementById('gajiBody');
+const DISTRIBUSI_CARD = document.getElementById('distribusiCard');
 const USERS = ["abi", "baruna", "firzi", "jerry", "yuda"];
+const ALLOWED_EMAILS = ['firzi@genzet.com', 'abizar@genzet.com'];
 
-// Normalisasi nama input jadi lowercase + ganti nama panjang
+// ... (UTILS and DATA FETCHING code remains same) ...
+
+// ========================
+// ✅ INIT
+// ========================
+async function inisialisasi() {
+  const { userData, netProfit } = await ambilData();
+
+  // 1. Render Performa (Visible to everyone)
+  const dataPerforma = hitungPower(userData);
+  renderPerforma(dataPerforma);
+
+  // 2. Check Access for Salary Panel
+  onAuthStateChanged(auth, (user) => {
+    if (user && ALLOWED_EMAILS.includes(user.email)) {
+      // Show Card
+      if (DISTRIBUSI_CARD) DISTRIBUSI_CARD.classList.remove('d-none');
+
+      // Calculate and Render
+      const dataGaji = hitungGaji(userData, netProfit);
+      renderGaji(dataGaji);
+    } else {
+      // Ensure hidden
+      if (DISTRIBUSI_CARD) DISTRIBUSI_CARD.classList.add('d-none');
+    }
+  });
+}
+
+inisialisasi();
+
+// ========================
+// ✅ UTILS
+// ========================
 const normalisasiNama = (nama) =>
   nama.toLowerCase().replace("abizar", "abi").trim();
 
 const kapitalAwal = (str) =>
   str.charAt(0).toUpperCase() + str.slice(1);
 
-// Format angka jadi Rupiah
 const formatRupiah = (angka) => {
   if (typeof angka !== 'number') angka = parseInt(angka) || 0;
   return new Intl.NumberFormat('id-ID', {
@@ -26,131 +61,169 @@ const formatRupiah = (angka) => {
   }).format(angka);
 };
 
-// Ambil dan hitung data dari Firestore
-async function ambilDataKinerja() {
+// ========================
+// ✅ DATA FETCHING
+// ========================
+async function ambilData() {
   const absenSnap = await getDocs(collection(db, 'absen'));
   const pemasukanSnap = await getDocs(collection(db, 'pemasukan'));
+  const pelangganSnap = await getDocs(collection(db, 'pelanggan'));
+  const pengeluaranTetapSnap = await getDocs(collection(db, 'pengeluaran_tetap'));
 
-  // Buat struktur awal
-  const kinerja = Object.fromEntries(USERS.map(n => [n, { hadir: 0, modal: 0 }]));
+  const data = Object.fromEntries(USERS.map(n => [n, { hadir: 0, modal: 0 }]));
 
-  // Hitung jumlah hadir
+  // Hitung hadir
   absenSnap.forEach(doc => {
-    const data = doc.data();
-    const nama = normalisasiNama(data.nama || data.username || "");
-    if (USERS.includes(nama)) kinerja[nama].hadir++;
+    const d = doc.data();
+    const nama = normalisasiNama(d.nama || d.username || "");
+    if (USERS.includes(nama)) data[nama].hadir++;
   });
 
-  // Hitung total modal dari pemasukan
+  // Hitung modal
   pemasukanSnap.forEach(doc => {
-    const data = doc.data();
-    const ket = normalisasiNama(data.keterangan || "");
-    const jumlah = parseInt(data.jumlah) || 0;
+    const d = doc.data();
+    const ket = normalisasiNama(d.keterangan || "");
     const nama = USERS.find(n => ket.includes(n));
-    if (nama) kinerja[nama].modal += jumlah;
+    if (nama) data[nama].modal += parseInt(d.jumlah || 0);
   });
 
-  return kinerja;
+  // Hitung Keuangan (Profit Bersih)
+  let income = 0;
+  pelangganSnap.forEach(d => income += parseInt(d.data().nominal || 0));
+
+  let expense = 0;
+  pengeluaranTetapSnap.forEach(d => expense += parseInt(d.data().jumlah || 0));
+
+  const gross = income - expense;
+  const kas = Math.round(gross * 0.05); // 5% Kas
+  const net = gross - kas;
+
+  return { userData: data, netProfit: net };
 }
 
-// Hitung power proporsional agar total 100%
-function hitungPower(data) {
-  const maxHadir = Math.max(...Object.values(data).map(d => d.hadir));
-  const maxModal = Math.max(...Object.values(data).map(d => d.modal));
+// ========================
+// ✅ LOGIC 1: PERFORMA (RANK & POWER)
+// ========================
+function hitungPower(userData) {
+  const maxHadir = Math.max(...Object.values(userData).map(d => d.hadir)) || 1;
+  const maxModal = Math.max(...Object.values(userData).map(d => d.modal)) || 1;
 
-  // Hitung skor mentah
-  const skorMentah = Object.fromEntries(Object.entries(data).map(([nama, val]) => {
-    const hadirScore = maxHadir ? val.hadir / maxHadir : 0;
-    const modalScore = maxModal ? val.modal / maxModal : 0;
-    const score = hadirScore * 0.30 + modalScore * 0.70;
-    return [nama, { ...val, score }];
+  const skor = Object.entries(userData).map(([nama, val]) => {
+    const s = ((val.hadir / maxHadir) * 0.3) + ((val.modal / maxModal) * 0.7);
+    return { nama, ...val, score: s };
+  });
+
+  const totalScore = skor.reduce((acc, v) => acc + v.score, 0) || 1;
+
+  let result = skor.map(v => ({
+    ...v,
+    power: Math.round((v.score / totalScore) * 100)
   }));
 
-  const totalScore = Object.values(skorMentah).reduce((acc, val) => acc + val.score, 0) || 1;
-
-  // Hitung power awal
-  let powerFinal = Object.fromEntries(Object.entries(skorMentah).map(([nama, val]) => {
-    const power = Math.round((val.score / totalScore) * 100);
-    return [nama, { ...val, power }];
-  }));
-
-  // Koreksi pembulatan agar total tetap 100%
-  let totalPower = Object.values(powerFinal).reduce((acc, val) => acc + val.power, 0);
-  const selisih = 100 - totalPower;
-
-  if (selisih !== 0) {
-    const urut = Object.entries(powerFinal).sort(([, a], [, b]) => b.power - a.power);
-    const target = urut[0][0]; // Ambil yang power-nya paling besar
-    powerFinal[target].power += selisih;
+  // Koreksi 100%
+  const totalPower = result.reduce((acc, v) => acc + v.power, 0);
+  const diff = 100 - totalPower;
+  if (diff !== 0) {
+    result.sort((a, b) => b.power - a.power);
+    result[0].power += diff;
   }
 
-  return powerFinal;
+  return result.sort((a, b) => b.power - a.power);
 }
 
-// Tampilkan tabel HTML
-function renderTabel(data) {
-  const dataArray = Object.entries(data).sort(([, a], [, b]) => b.power - a.power);
+// ========================
+// ✅ LOGIC 2: GAJI & DIVIDEN (RUPIAH)
+// ========================
+function hitungGaji(userData, netProfit) {
+  const salaryPool = Math.round(netProfit * 0.30);
+  const dividendPool = Math.round(netProfit * 0.70);
 
-  TABEL_BODY.innerHTML = dataArray.map(([nama, val], index) => {
-    // Tentukan warna progress bar berdasarkan power
-    let progressColor = 'bg-success';
-    if (val.power < 30) progressColor = 'bg-danger';
-    else if (val.power < 70) progressColor = 'bg-warning';
+  let totalHadir = Object.values(userData).reduce((acc, v) => acc + v.hadir, 0);
+  let totalModal = Object.values(userData).reduce((acc, v) => acc + v.modal, 0);
 
-    // Tentukan Icon Rank
-    let rankIcon = '';
-    if (index === 0) {
-      rankIcon = '<i class="fas fa-trophy text-warning fa-lg"></i>'; // Juara 1 (Emas)
-    } else if (index === 1) {
-      rankIcon = '<i class="fas fa-medal fa-lg" style="color: #C0C0C0;"></i>'; // Juara 2 (Perak)
-    } else if (index === 2) {
-      rankIcon = '<i class="fas fa-medal fa-lg" style="color: #CD7F32;"></i>'; // Juara 3 (Perunggu)
-    } else {
-      rankIcon = '<i class="fas fa-user-circle text-secondary fa-lg align-middle"></i>'; // Sisanya
-    }
+  const result = Object.entries(userData).map(([nama, val]) => {
+    const gaji = totalHadir ? Math.round((val.hadir / totalHadir) * salaryPool) : 0;
+    const dividen = totalModal ? Math.round((val.modal / totalModal) * dividendPool) : 0;
+
+    // Rumus String untuk Tooltip
+    const rumusGaji = totalHadir
+      ? `Rumus: ${val.hadir} (Absen) / ${totalHadir} (Total) x ${formatRupiah(salaryPool)}`
+      : "Tidak ada absen global";
+
+    const rumusDividen = totalModal
+      ? `Rumus: ${formatRupiah(val.modal)} (Modal) / ${formatRupiah(totalModal)} (Total) x ${formatRupiah(dividendPool)}`
+      : "Tidak ada modal global";
+
+    return { nama, gaji, dividen, total: gaji + dividen, rumusGaji, rumusDividen };
+  });
+
+  return result.sort((a, b) => b.total - a.total);
+}
+
+// ========================
+// ✅ RENDER
+// ========================
+function renderPerforma(data) {
+  TABEL_BODY.innerHTML = data.map((val, index) => {
+    let rankArrow = '';
+    if (index === 0) rankArrow = '<i class="fas fa-trophy text-warning fa-lg"></i>';
+    else if (index === 1) rankArrow = '<i class="fas fa-medal fa-lg text-secondary"></i>';
+    else if (index === 2) rankArrow = '<i class="fas fa-medal fa-lg" style="color: #CD7F32;"></i>';
+    else rankArrow = '<i class="fas fa-user-circle text-muted fa-lg"></i>';
+
+    let color = 'bg-success';
+    if (val.power < 30) color = 'bg-danger';
+    else if (val.power < 70) color = 'bg-warning';
 
     return `
-    <tr>
-      <td class="align-middle text-center fw-bold">${index + 1}</td> <!-- Nomor Fixed -->
-      <td class="text-start align-middle">
-        <span class="fw-semibold text-dark">${kapitalAwal(nama)}</span>
-      </td>
-      <td class="align-middle text-center">
-        ${rankIcon}
-      </td>
-      <td class="align-middle text-muted fw-medium">${val.hadir}</td>
-      <td class="align-middle fw-medium text-dark">${formatRupiah(val.modal)}</td>
-      <td class="align-middle">
-        <div class="d-flex flex-column justify-content-center h-100">
-            <div class="d-flex justify-content-between mb-1" style="font-size: 0.75rem;">
-                <span class="fw-bold">${val.power}%</span>
+      <tr>
+        <td class="text-center fw-bold">${index + 1}</td>
+        <td>${kapitalAwal(val.nama)}</td>
+        <td class="text-center">${rankArrow}</td>
+        <td class="text-muted text-center">${val.hadir}</td>
+        <td class="text-dark">${formatRupiah(val.modal)}</td>
+        <td>
+          <div class="d-flex align-items-center">
+            <span class="me-2 fw-bold" style="font-size:0.8rem;">${val.power}%</span>
+            <div class="progress flex-grow-1" style="height: 6px;">
+              <div class="progress-bar ${color}" style="width: ${val.power}%"></div>
             </div>
-            <div class="progress shadow-sm" style="height: 6px; border-radius: 10px;">
-                <div class="progress-bar ${progressColor}" role="progressbar" style="width: ${val.power}%; border-radius: 10px;" aria-valuenow="${val.power}" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-        </div>
-      </td>
-    </tr>
-  `;
+          </div>
+        </td>
+      </tr>
+    `;
   }).join("");
 }
 
-// Jalankan semua proses
-async function inisialisasi() {
-  const dataAwal = await ambilDataKinerja();
-  const hasil = hitungPower(dataAwal);
-  renderTabel(hasil);
+function renderGaji(data) {
+  if (!TABEL_GAJI_BODY) return;
 
-  // Inisialisasi DataTable
-  const table = $('#kinerjaTable').DataTable({
-    ordering: false, // Disable user sorting (removes arrows)
-    paging: false,
-    info: false,
-    searching: false // Optional: also remove search if not needed, but safe to keep. User asked for sort only.
+  TABEL_GAJI_BODY.innerHTML = data.map((val, index) => `
+    <tr>
+      <td class="text-center fw-bold align-middle">${index + 1}</td>
+      <td class="align-middle fw-semibold">${kapitalAwal(val.nama)}</td>
+      
+      <td class="align-middle" style="cursor: help;" 
+          data-bs-toggle="tooltip" data-bs-placement="top" title="${val.rumusGaji}">
+        <span class="text-muted">${formatRupiah(val.gaji)}</span>
+      </td>
+
+      <td class="align-middle" style="cursor: help;" 
+          data-bs-toggle="tooltip" data-bs-placement="top" title="${val.rumusDividen}">
+        <span class="text-muted">${formatRupiah(val.dividen)}</span>
+      </td>
+
+      <td class="align-middle fw-bold text-success">
+        ${formatRupiah(val.total)}
+      </td>
+    </tr>
+  `).join("");
+
+  // Initialize Bootstrap Tooltips
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
   });
-
-  // No callback needed for reordering/numbering since it's now handled by renderTabel order
-  table.draw();
 }
 
-inisialisasi();
+

@@ -69,6 +69,12 @@
           <h5 id="totalMbps">0 Mbps</h5>
         </div>
       </div>
+      <div class="col-md-3">
+        <div class="p-3 border rounded" style="background-color: #c71585; color: white;">
+          <h6>Pengeluaran Tetap</h6>
+          <h5 id="totalPengeluaranTetap">Rp 0</h5>
+        </div>
+      </div>
     </div>
     <div class="card mb-4">
       <div class="card-header bg-success text-white">
@@ -123,6 +129,31 @@
         </div>
       </div>
     </div>
+
+
+    <!-- ✅ Card PEMBAGIAN HASIL (Restored) -->
+    <div class="card mb-4 d-none" id="distribusiCard">
+      <div class="card-header bg-success text-white">
+        <i class="fa-solid fa-money-bill-transfer"></i> Pembagian Hasil
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped mb-0 text-nowrap" id="gajiTable">
+            <thead class="table-light align-middle text-center">
+              <tr>
+                <th style="width: 5%;">No</th>
+                <th class="text-start" style="width: 15%;">Nama</th>
+                <th class="text-start" style="width: 25%;">Gaji (Attendance)</th>
+                <th class="text-start" style="width: 25%;">Dividen (Modal)</th>
+                <th class="text-start" style="width: 30%;">Total Terima</th>
+              </tr>
+            </thead>
+            <tbody id="gajiBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <div class="card mb-4">
       <div class="card-header bg-success text-white">
         <i class="fa-solid fa-chart-simple"></i> Penanaman Modal

@@ -4,7 +4,7 @@ import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 import Swal from "https://cdn.jsdelivr.net/npm/sweetalert2@11/+esm";
 
 let totalPemasukan = 0, totalPengeluaran = 0, totalAssets = 0, saldo = 0;
-let totalPelanggan = 0, penghasilanPelanggan = 0, totalMbps = 0;
+let totalPelanggan = 0, penghasilanPelanggan = 0, totalMbps = 0, totalPengeluaranTetap = 0;
 
 onAuthStateChanged(auth, (user) => {
   refreshLaporan();
@@ -12,7 +12,7 @@ onAuthStateChanged(auth, (user) => {
 
 export async function refreshLaporan() {
   totalPemasukan = totalPengeluaran = totalAssets = saldo = 0;
-  totalPelanggan = penghasilanPelanggan = totalMbps = 0;
+  totalPelanggan = penghasilanPelanggan = totalMbps = totalPengeluaranTetap = 0;
 
   const pemasukanSnap = await getDocs(collection(db, "pemasukan"));
   pemasukanSnap.forEach(doc => totalPemasukan += parseInt(doc.data().jumlah || 0));
@@ -22,6 +22,9 @@ export async function refreshLaporan() {
 
   const assetsSnap = await getDocs(collection(db, "assets"));
   assetsSnap.forEach(doc => totalAssets += parseInt(doc.data().jumlah || 0));
+
+  const pengeluaranTetapSnap = await getDocs(collection(db, "pengeluaran_tetap"));
+  pengeluaranTetapSnap.forEach(doc => totalPengeluaranTetap += parseInt(doc.data().jumlah || 0));
 
   const pelangganSnap = await getDocs(collection(db, "pelanggan"));
 
@@ -52,6 +55,7 @@ export async function refreshLaporan() {
   animateNumberPlain("totalPelanggan", totalPelanggan);
   animateNumber("penghasilanPelanggan", penghasilanPelanggan);
   animateNumberPlain("totalMbps", totalMbps, " Mbps");
+  animateNumber("totalPengeluaranTetap", totalPengeluaranTetap);
 
   tampilkanProgress(totalPemasukan, totalPengeluaran, totalAssets, saldo);
 

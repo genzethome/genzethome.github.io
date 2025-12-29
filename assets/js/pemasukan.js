@@ -2,18 +2,19 @@
 import { db, auth } from './firebase-init.js';
 import "./navbar.js";
 import {
-    collection,
-    addDoc,
-    getDoc,
-    serverTimestamp,
-    getDocs,
-    doc,
-    query,
-    orderBy,
-    limit,
-    updateDoc,
-    onSnapshot,
-  deleteDoc} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+  collection,
+  addDoc,
+  getDoc,
+  serverTimestamp,
+  getDocs,
+  doc,
+  query,
+  orderBy,
+  limit,
+  updateDoc,
+  onSnapshot,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
@@ -60,67 +61,104 @@ function toISODate(tanggal) {
 // ========================
 // ✅ LOAD DATA
 // ========================
+// ========================
+// ✅ FILTER LOGIC
+// ========================
+const USERS = ["abi", "baruna", "firzi", "jerry", "yuda"];
+const NON_PAYMENT_KEYWORDS = ["modal", "investasi", "pinjaman", ...USERS];
+
+function isNonPayment(keterangan) {
+  const lower = keterangan.toLowerCase();
+  return NON_PAYMENT_KEYWORDS.some(keyword => lower.includes(keyword));
+}
+
+// ========================
+// ✅ LOAD DATA
+// ========================
+let allDocs = []; // Simpan data mentah untuk filtering lokal
+
+function renderTable(docs) {
+  // 1. Destroy DataTables dulu (jika ada)
+  if ($.fn.DataTable.isDataTable('#tablePemasukan')) {
+    $('#tablePemasukan').DataTable().destroy();
+  }
+
+  // 2. Filter Data
+  const filterVal = document.getElementById("filterKategori").value;
+
+  const filteredDocs = docs.filter(d => {
+    if (filterVal === 'all') return true;
+    const isNon = isNonPayment(d.keterangan || "");
+    if (filterVal === 'non-payment') return isNon;
+    if (filterVal === 'payment') return !isNon;
+    return true;
+  });
+
+  // 3. Kosongkan tbody
+  tbody.innerHTML = "";
+  let total = 0;
+
+  // 4. Render data ke tbody
+  filteredDocs.forEach((d) => {
+    total += parseInt(d.jumlah || 0);
+    const nama = capitalizeWords(d.keterangan || "-");
+    const namaTampil = truncateText(nama);
+    const isoDate = toISODate(d.tanggal || "");
+
+    tbody.innerHTML += `
+      <tr>
+        <td></td>
+        <td><span data-bs-toggle="tooltip" title="${nama}">${namaTampil}</span></td>
+        <td>${d.kuantitas || "-"}</td>
+        <td data-order="${parseInt(d.jumlah || 0)}">Rp ${parseInt(d.jumlah || 0).toLocaleString()}</td>
+        <td>${formatUploader(d.uploader)}</td>
+        <td data-order="${isoDate}">${d.tanggal || "-"}</td>
+        <td><input type="checkbox" class="rowCheckbox" value="${d.id}"></td>
+      </tr>
+    `;
+  });
+
+  totalEl.textContent = "Rp " + total.toLocaleString();
+
+  // 5. Inisialisasi DataTables
+  table = $('#tablePemasukan').DataTable({
+    dom: 'rtip',
+    lengthChange: false,
+    pageLength: parseInt(document.getElementById("pageLengthSelect").value),
+    order: [[5, 'desc']],
+    columnDefs: [
+      { targets: 0, searchable: false, orderable: false },
+      { targets: 3, type: "num" }
+    ]
+  });
+
+  table.on('order.dt search.dt', function () {
+    table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+      cell.innerHTML = i + 1;
+    });
+  }).draw();
+
+  // aktifkan tooltip bootstrap
+  const tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  tooltips.map(el => new bootstrap.Tooltip(el));
+}
+
 function loadDataRealtime() {
   const q = collection(db, "pemasukan");
 
   onSnapshot(q, (snapshot) => {
-    // 1. Destroy DataTables dulu (jika ada)
-    if ($.fn.DataTable.isDataTable('#tablePemasukan')) {
-      $('#tablePemasukan').DataTable().destroy();
-    }
-
-    // 2. Kosongkan tbody
-    tbody.innerHTML = "";
-    let total = 0;
-
-    // 3. Render data ke tbody
-    snapshot.forEach((docSnap) => {
-      const d = docSnap.data();
-      total += parseInt(d.jumlah || 0);
-      const nama = capitalizeWords(d.keterangan || "-");
-      const namaTampil = truncateText(nama);
-      const isoDate = toISODate(d.tanggal || "");
-
-      tbody.innerHTML += `
-        <tr>
-          <td></td>
-          <td><span data-bs-toggle="tooltip" title="${nama}">${namaTampil}</span></td>
-          <td>${d.kuantitas || "-"}</td>
-          <td data-order="${parseInt(d.jumlah || 0)}">Rp ${parseInt(d.jumlah || 0).toLocaleString()}</td>
-          <td>${formatUploader(d.uploader)}</td>
-          <td data-order="${isoDate}">${d.tanggal || "-"}</td>
-          <td><input type="checkbox" class="rowCheckbox" value="${docSnap.id}"></td>
-        </tr>
-      `;
+    allDocs = [];
+    snapshot.forEach(docSnap => {
+      allDocs.push({ id: docSnap.id, ...docSnap.data() });
     });
-
-    totalEl.textContent = "Rp " + total.toLocaleString();
-
-    // 4. Inisialisasi DataTables setelah data sudah di tbody
-    table = $('#tablePemasukan').DataTable({
-      dom: 'rtip',
-      lengthChange: false,
-      pageLength: parseInt(document.getElementById("pageLengthSelect").value),
-      order: [[5, 'desc']],
-      columnDefs: [
-        { targets: 0, searchable: false, orderable: false },
-        { targets: 3, type: "num" }
-      ]
-    });
-
-    table.on('order.dt search.dt', function () {
-      table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
-        cell.innerHTML = i + 1;
-      });
-    }).draw();
-
-    // aktifkan tooltip bootstrap
-    const tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltips.map(el => new bootstrap.Tooltip(el));
-
-    console.log("DataTables re-initialized"); // DEBUG
+    renderTable(allDocs);
   });
 }
+
+// Event Listener untuk Filter
+document.getElementById("filterKategori").addEventListener("change", () => {
+  renderTable(allDocs);
+});
 
 // ========================
 // ✅ PAGE LENGTH
@@ -141,7 +179,7 @@ document.getElementById("selectAll").addEventListener("change", (e) => {
 // ✅ DELETE SELECTED
 // ========================
 document.getElementById("deleteSelectedBtn").addEventListener("click", async () => {
-  const selectedIds = $('#tablePemasukan').find('tbody .rowCheckbox:checked').map(function() {
+  const selectedIds = $('#tablePemasukan').find('tbody .rowCheckbox:checked').map(function () {
     return this.value;
   }).get();
   if (selectedIds.length === 0) return Swal.fire("Pilih data yang akan dihapus!", "", "warning");
