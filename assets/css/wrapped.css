@@ -1,0 +1,466 @@
+:root {
+    --bg-deep: #020c1b;
+    --bg-navy: #0a192f;
+    --text-white: #e6f1ff;
+    --text-slate: #8892b0;
+    --primary-cyan: #64ffda;
+    --accent-amber: #ffc107;
+    --font-heading: 'Rajdhani', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-deep);
+    color: var(--text-white);
+    font-family: var(--font-body);
+    margin: 0;
+    overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+.brand-text,
+.display-1,
+.uppercase {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+}
+
+/* --- BACKGROUNDS --- */
+.wrapped-container {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    position: relative;
+    z-index: 2;
+    scrollbar-width: none;
+}
+
+.wrapped-container::-webkit-scrollbar {
+    display: none;
+}
+
+.wrapped-slide {
+    height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    position: relative;
+    background: transparent;
+    /* See global bg */
+}
+
+/* Global Animated Signal Background */
+.signal-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 120%, #112240 0%, #020c1b 70%);
+    z-index: 0;
+    overflow: hidden;
+}
+
+.signal-bg::before {
+    content: '';
+    position: absolute;
+    bottom: -50vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200vw;
+    height: 200vw;
+    border: 2px solid rgba(100, 255, 218, 0.05);
+    border-radius: 50%;
+    animation: pulseSignal 4s infinite linear;
+}
+
+.signal-bg::after {
+    content: '';
+    position: absolute;
+    bottom: -40vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150vw;
+    height: 150vw;
+    border: 2px solid rgba(100, 255, 218, 0.05);
+    border-radius: 50%;
+    animation: pulseSignal 4s infinite linear 1s;
+    /* Staggered */
+}
+
+@keyframes pulseSignal {
+    0% {
+        transform: translateX(-50%) scale(0.8);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateX(-50%) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Particles */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(rgba(100, 255, 218, 0.2) 1px, transparent 0);
+    background-size: 40px 40px;
+    z-index: 1;
+    opacity: 0.1;
+}
+
+/* --- UTILITIES --- */
+.text-cyan {
+    color: var(--primary-cyan) !important;
+}
+
+.bg-navy {
+    background-color: var(--bg-navy);
+}
+
+.border-cyan {
+    border-color: var(--primary-cyan) !important;
+}
+
+.tracking-widest {
+    letter-spacing: 0.2em;
+}
+
+.btn-outline-cyan {
+    border-color: var(--primary-cyan);
+    color: var(--primary-cyan);
+}
+
+.btn-cyan {
+    background-color: var(--primary-cyan);
+    color: var(--bg-deep);
+    border: none;
+    transition: transform 0.2s;
+}
+
+.btn-cyan:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(100, 255, 218, 0.4);
+}
+
+/* --- COMPONENTS --- */
+.glass-panel {
+    background: rgba(17, 34, 64, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
+}
+
+/* Slide 2: Rise Up Anim */
+.rise-up-anim {
+    animation: riseUp 2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform-origin: bottom;
+}
+
+@keyframes riseUp {
+    from {
+        transform: translateY(50px) scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.drop-shadow-glow {
+    filter: drop-shadow(0 0 10px rgba(255, 193, 7, 0.5));
+}
+
+/* Slide 3: Ripple */
+.ripple-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ripple-circle {
+    position: absolute;
+    border: 2px solid var(--primary-cyan);
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    animation: ripple 2s infinite ease-out;
+    opacity: 0;
+}
+
+.ripple-circle.delay-1 {
+    animation-delay: 0.5s;
+}
+
+.ripple-circle.delay-2 {
+    animation-delay: 1s;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Slide 4: Survivors */
+.survivor-icon {
+    color: var(--text-white);
+    opacity: 1;
+    /* Awalnya semua terlihat (Total 7) */
+    transition: all 1.5s ease-in-out;
+}
+
+/* State Awal (Hidden/Fallen logic applied via class) */
+.survivor-icon.active {
+    color: var(--text-slate);
+    /* Default sebelum nyala */
+}
+
+/* Saat slide visible, baru effect nyala */
+/* Saat slide visible, baru effect nyala (Calm Version) */
+.wrapped-slide .visible .survivor-icon.active {
+    color: var(--primary-cyan);
+    filter: drop-shadow(0 0 4px rgba(100, 255, 218, 0.3));
+    /* Very soft shadow */
+    animation: neonPulseCalm 3s infinite alternate;
+    /* Slow pulse */
+}
+
+.wrapped-slide .visible .survivor-icon.fallen {
+    color: #0f1623;
+    opacity: 0.2;
+    transform: scale(0.8);
+}
+
+@keyframes neonPulseCalm {
+    from {
+        text-shadow: 0 0 2px rgba(100, 255, 218, 0.2);
+        transform: scale(1);
+    }
+
+    to {
+        text-shadow: 0 0 8px rgba(100, 255, 218, 0.5);
+        transform: scale(1.02);
+        /* Minimal scaling */
+    }
+}
+
+/* Slide 5: EKG */
+.ekg-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dash 3s linear forwards;
+}
+
+@keyframes dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Animations */
+.animate-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+
+.visible.animate-up {
+    opacity: 1;
+    transform: none;
+}
+
+.delay-1 {
+    transition-delay: 0.2s;
+}
+
+.delay-2 {
+    transition-delay: 0.4s;
+}
+
+/* RADAR MAP STYLES */
+.radar-container {
+    width: 280px;
+    height: 280px;
+    z-index: 5;
+}
+
+.radar-map {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, #112240 0%, #020c1b 70%);
+    border: 1px solid rgba(100, 255, 218, 0.3);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.radar-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle, transparent 69%, rgba(100, 255, 218, 0.1) 70%, transparent 71%),
+        radial-gradient(circle, transparent 39%, rgba(100, 255, 218, 0.1) 40%, transparent 41%),
+        linear-gradient(0deg, transparent 49%, rgba(100, 255, 218, 0.1) 50%, transparent 51%),
+        linear-gradient(90deg, transparent 49%, rgba(100, 255, 218, 0.1) 50%, transparent 51%);
+    border-radius: 50%;
+}
+
+.radar-scan {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(from 0deg, transparent 270deg, rgba(100, 255, 218, 0.4) 360deg);
+    border-radius: 50%;
+    animation: radarScan 4s infinite linear;
+}
+
+@keyframes radarScan {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Lights on map */
+.map-light {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--primary-cyan);
+    animation: lightPulse 2s infinite alternate;
+    z-index: 10;
+}
+
+/* GOLDEN QUOTE STYLES */
+.maintenance-silhouette {
+    position: relative;
+    height: 180px;
+    width: 200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pole {
+    width: 8px;
+    /* Thicker pole */
+    height: 100%;
+    background: #4a5568;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 4px;
+}
+
+.worker-icon {
+    position: absolute;
+    top: 10%;
+    /* Higher up the pole */
+    left: 42%;
+    /* Centered visually */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    transform: rotate(-5deg);
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
+}
+
+.sparks {
+    position: absolute;
+    top: 5%;
+    right: 45%;
+    font-size: 1.5rem;
+    color: #ffc107;
+    animation: sparkFlash 0.3s infinite alternate;
+    /* Faster flash */
+    z-index: 3;
+}
+
+@keyframes sparkFlash {
+    from {
+        opacity: 0.2;
+        transform: scale(0.8) rotate(15deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.4) rotate(-15deg);
+        text-shadow: 0 0 15px #ffc107;
+    }
+}
+
+.quote-item {
+    transition: opacity 0.5s ease;
+}
+
+@keyframes lightPulse {
+    from {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.5);
+        box-shadow: 0 0 15px var(--primary-cyan);
+    }
+}
+
+/* QUIZ STYLES */
+.quiz-btn {
+    border-width: 2px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.quiz-btn:hover {
+    background-color: rgba(100, 255, 218, 0.1);
+    transform: scale(1.05);
+}
+
+.quiz-btn:active {
+    transform: scale(0.95);
+}

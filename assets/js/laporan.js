@@ -27,6 +27,15 @@ export async function refreshLaporan() {
   pengeluaranTetapSnap.forEach(doc => totalPengeluaranTetap += parseInt(doc.data().jumlah || 0));
 
   const pelangganSnap = await getDocs(collection(db, "pelanggan"));
+  const freepassSnap = await getDocs(collection(db, "freepass"));
+
+  const freeAccessCount = freepassSnap.size;
+
+  freepassSnap.forEach(doc => {
+    // Asumsi 'jumlah' di freepass adalah Mbps (int)
+    // Jika di database bertipe string "20 Mbps", perlu parsing
+    totalMbps += parseInt(doc.data().jumlah || 0);
+  });
 
   // 🗂️ Hitung total dan data pelanggan
   const kecamatanCount = {};
@@ -52,7 +61,13 @@ export async function refreshLaporan() {
   animateNumber("totalAssets", totalAssets);
   animateNumber("saldoAkhir", saldo);
 
-  animateNumberPlain("totalPelanggan", totalPelanggan);
+  // Update Total Pelanggan Display: "14 (2)"
+  const totalPelangganEl = document.getElementById("totalPelanggan");
+  if (totalPelangganEl) {
+    totalPelangganEl.textContent = `${totalPelanggan} (${freeAccessCount})`;
+  }
+  // animateNumberPlain("totalPelanggan", totalPelanggan); // Removed old animation to support custom format
+
   animateNumber("penghasilanPelanggan", penghasilanPelanggan);
   animateNumberPlain("totalMbps", totalMbps, " Mbps");
   animateNumber("totalPengeluaranTetap", totalPengeluaranTetap);
@@ -124,5 +139,7 @@ function animateNumberPlain(elementId, targetValue, suffix = "") {
 
   requestAnimationFrame(updateNumber);
 }
+
+
 
 document.getElementById("refreshBtn").addEventListener("click", refreshLaporan);

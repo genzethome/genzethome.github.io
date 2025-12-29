@@ -154,7 +154,16 @@ function hitungGaji(userData, netProfit) {
       ? `Rumus: ${formatRupiah(val.modal)} (Modal) / ${formatRupiah(totalModal)} (Total) x ${formatRupiah(dividendPool)}`
       : "Tidak ada modal global";
 
-    return { nama, gaji, dividen, total: gaji + dividen, rumusGaji, rumusDividen };
+    return {
+      nama,
+      gaji,
+      dividen,
+      total: gaji + dividen,
+      rumusGaji,
+      rumusDividen,
+      hariKerja: val.hadir,
+      modal: val.modal
+    };
   });
 
   return result.sort((a, b) => b.total - a.total);
@@ -198,7 +207,18 @@ function renderPerforma(data) {
 function renderGaji(data) {
   if (!TABEL_GAJI_BODY) return;
 
-  TABEL_GAJI_BODY.innerHTML = data.map((val, index) => `
+  TABEL_GAJI_BODY.innerHTML = data.map((val, index) => {
+    // Status Logic
+    let statusBadge = "";
+    if (val.hariKerja === 0) {
+      statusBadge = '<span class="badge bg-secondary">Rekan Pasif</span>';
+    } else if (val.hariKerja > 0 && val.modal > 0) {
+      statusBadge = '<span class="badge bg-success">Rekan Aktif</span>';
+    } else if (val.hariKerja > 0) {
+      statusBadge = '<span class="badge bg-primary">Pekerja</span>';
+    }
+
+    return `
     <tr>
       <td class="text-center fw-bold align-middle">${index + 1}</td>
       <td class="align-middle fw-semibold">${kapitalAwal(val.nama)}</td>
@@ -216,8 +236,9 @@ function renderGaji(data) {
       <td class="align-middle fw-bold text-success">
         ${formatRupiah(val.total)}
       </td>
+      <td class="text-start align-middle">${statusBadge}</td>
     </tr>
-  `).join("");
+  `}).join("");
 
   // Initialize Bootstrap Tooltips
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

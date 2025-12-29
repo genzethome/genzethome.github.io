@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cibarusah Chronicles - Genzet Wrapped</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/wrapped.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Signal Background (Global) -->
+    <div class="signal-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="nav-overlay p-4 fixed-top d-flex justify-content-between align-items-center">
+        <a href="index.html" class="btn btn-sm btn-outline-cyan rounded-pill px-3 back-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <div class="brand-text tracking-widest text-cyan small fw-bold">GENZETHOME</div>
+    </div>
+
+    <div class="wrapped-container">
+
+        <!-- SLIDE 1: THE TIMELINE -->
+        <section class="wrapped-slide" id="slide1">
+            <div class="content text-center px-4">
+                <div class="counter-container mb-2">
+                    <span class="display-1 fw-bold text-white" id="daysCounter">0</span>
+                    <span class="fs-4 text-cyan d-block tracking-widest">HARI DI CIBARUSAH</span>
+                </div>
+                <div class="story-card glass-panel mt-5 animate-up delay-1">
+                    <p class="mb-0">Bukan sekadar angka kalender.</p>
+                    <p class="text-white-50 mt-3">Ini adalah <strong class="text-white">5.000+ jam</strong> kita menjaga
+                        agar sinyal tetap hidup di langit Cibarusah. Dari panas terik hingga hujan badai, kita ada di
+                        sana.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: THE EVOLUTION (THE LADDER) -->
+        <section class="wrapped-slide" id="slide2">
+            <div class="content text-center px-4">
+                <div class="icon-evolution mb-5 d-flex justify-content-center align-items-center gap-4 animate-up">
+                    <div class="opacity-50 grayscale">
+                        <i class="fa-solid fa-hand-holding fa-3x text-white"></i>
+                        <small class="d-block mt-2">Pinjam Warga</small>
+                    </div>
+                    <i class="fa-solid fa-arrow-right text-cyan"></i>
+                    <div class="rise-up-anim">
+                        <i class="fa-solid fa-ladder-water fa-4x text-warning drop-shadow-glow"></i>
+                        <small class="d-block mt-2 text-warning fw-bold">Milik Sendiri</small>
+                    </div>
+                </div>
+
+                <h2 class="text-white fw-bold animate-up delay-1 uppercase">THE ASCENT</h2>
+                <div class="story-card glass-panel mt-4 animate-up delay-2 text-start">
+                    <p class="mb-0">Ingat saat kita harus meminjam tangga warga? Menahan malu demi memanjat tiang?</p>
+                    <hr class="border-cyan opacity-25">
+                    <p class="text-white fst-italic">"Hari ini, kita berdiri tegak di atas tangga milik sendiri. Aset
+                        ini adalah saksi bisu kemandirian kita."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: THE NETWORK -->
+        <section class="wrapped-slide" id="slide3">
+            <div class="content text-center px-4">
+                <!-- RADAR MAP VISUALIZATION -->
+                <div class="radar-container mx-auto mb-4 animate-up position-relative">
+                    <div class="radar-map" id="cibarusahMap">
+                        <div class="radar-grid"></div>
+                        <div class="radar-scan"></div>
+                        <!-- Lights will be injected here by JS -->
+                    </div>
+                    <div class="radar-label small text-cyan tracking-widest mt-2">CIBARUSAH SECTOR</div>
+                </div>
+
+                <h1 class="display-3 fw-bold text-white animate-up delay-1" id="networkCount">14</h1>
+                <p class="text-secondary animate-up delay-1">TITIK CAHAYA</p>
+
+                <div class="story-card glass-panel mt-4 animate-up delay-2">
+                    <p class="mb-0">"14 Titik Cahaya di Langit Malam Cibarusah."</p>
+                    <p class="mt-2 small text-white-50">Setiap titik adalah rumah yang kini terhubung ke dunia luar.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3.5: THE GOLDEN QUOTE (DRAMA WARGA) -->
+        <section class="wrapped-slide" id="slideQuotes">
+            <div class="content text-center px-4 w-100">
+                <!-- Maintenance Silhouette (Restored) -->
+                <div class="maintenance-silhouette mb-5 animate-up">
+                    <div class="pole"></div>
+                    <div class="worker-icon">
+                        <i class="fa-solid fa-helmet-safety text-warning fa-2x"></i>
+                        <i class="fa-solid fa-person-digging text-white fa-3x"></i>
+                    </div>
+                    <div class="sparks">
+                        <i class="fa-solid fa-bolt text-warning"></i>
+                    </div>
+                </div>
+
+                <!-- Static Quotes (Stacked) -->
+                <div class="quotes-container animate-up delay-1">
+                    <div class="quote-block mb-5">
+                        <h3 class="fw-bold fst-italic text-white">"Mas, saya lupa password wifi saya..."</h3>
+                        <p class="mt-2 text-cyan tracking-widest small">— apasi namanya (Agustus 2025)</p>
+                    </div>
+
+                    <div class="quote-block">
+                        <h3 class="fw-bold fst-italic text-white">"Mas, kok wifinya lemot? padahal dirumah cuma 11
+                            orang..."</h3>
+                        <p class="mt-2 text-cyan tracking-widest small">— adalah pokonya (November 2025)</p>
+                    </div>
+                </div>
+
+                <div class="ticket-stat mt-5 animate-up delay-2">
+                    <div class="glass-panel d-inline-block px-5 py-3 border border-secondary">
+                        <h3 class="fw-bold text-white mb-0" id="ticketCount">0</h3>
+                        <small class="text-secondary tracking-widest">TIKET KOMPLAIN DITANGANI</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3.6: THE SERVER QUIZ -->
+        <!-- SLIDE 3.6: THE SERVER QUIZ -->
+        <section class="wrapped-slide" id="slideQuiz">
+            <div class="content text-center px-4 w-100">
+                <div class="quiz-icon mb-2 animate-up position-relative d-inline-block">
+                    <i class="fa-solid fa-server fa-4x text-white"></i>
+                    <i
+                        class="fa-solid fa-question fa-2x text-warning position-absolute translate-middle start-100 top-0"></i>
+                </div>
+
+                <h2 class="text-white fw-bold mb-2 animate-up delay-1">QUIZ DADAKAN</h2>
+                <p class="fs-5 text-cyan mb-3 animate-up delay-1">"Berapa kali kita restart server bulan ini?"</p>
+
+                <div class="quiz-options d-flex flex-column gap-2 mx-auto animate-up delay-2" style="max-width: 400px;">
+                    <button class="btn btn-outline-cyan rounded-pill py-2 quiz-btn" onclick="revealQuiz()">
+                        <span class="fw-bold me-2">A.</span> 5x
+                    </button>
+                    <button class="btn btn-outline-cyan rounded-pill py-2 quiz-btn" onclick="revealQuiz()">
+                        <span class="fw-bold me-2">B.</span> 20x
+                    </button>
+                    <button class="btn btn-outline-cyan rounded-pill py-2 quiz-btn" onclick="revealQuiz()">
+                        <span class="fw-bold me-2">C.</span> Tak Terhingga
+                    </button>
+                </div>
+
+                <div id="quizResult" class="mt-3 d-none">
+                    <h1 class="display-4 fw-bold text-warning shake-anim mb-1">ADALAH POKONYA</h1>
+                    <p class="text-white-50 small mt-1">"Yang penting connect lagi kan?"</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: THE SURVIVOR -->
+        <section class="wrapped-slide" id="slide4">
+            <div class="content text-center px-4">
+                <h2 class="text-white fw-bold mb-5 animate-up">THE LAST 4 STANDING</h2>
+
+                <div class="survivor-grid d-flex justify-content-center gap-3 mb-5 animate-up delay-1">
+                    <!-- Mixed Order: 4 Active, 3 Fallen -->
+                    <i class="fa-solid fa-user fa-3x survivor-icon active"></i>
+                    <i class="fa-solid fa-user fa-3x survivor-icon fallen"></i> <!-- Gone -->
+                    <i class="fa-solid fa-user fa-3x survivor-icon active"></i>
+                    <i class="fa-solid fa-user fa-3x survivor-icon active"></i>
+                    <i class="fa-solid fa-user fa-3x survivor-icon fallen"></i> <!-- Gone -->
+                    <i class="fa-solid fa-user fa-3x survivor-icon active"></i>
+                    <i class="fa-solid fa-user fa-3x survivor-icon fallen"></i> <!-- Gone -->
+                </div>
+
+                <div class="story-text text-white-50 animate-up delay-2 mx-auto" style="max-width: 500px;">
+                    <p>"Seleksi alam di lapangan itu kejam."</p>
+                    <p class="text-white mt-3">Dari 7 niat, tersisa <strong>4 tekad baja</strong>.</p>
+                    <p class="mt-3 small">Kita yang bertahan bukan karena hebat, tapi karena menolak menyerah pada
+                        keadaan.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: THE WAR CHEST -->
+        <section class="wrapped-slide" id="slide5">
+            <div class="content text-center px-4 w-100">
+                <div class="ekg-line mb-4 animate-up">
+                    <svg viewBox="0 0 500 100" class="w-100">
+                        <path d="M0,50 L50,50 L60,20 L70,80 L80,50 L100,50 L110,10 L120,90 L130,50 L500,50" fill="none"
+                            stroke="#64ffda" stroke-width="2" class="ekg-path" />
+                    </svg>
+                </div>
+
+                <h2 class="text-white fw-bold animate-up delay-1">FUELING THE MACHINE</h2>
+
+                <div class="finance-grid glass-panel mt-4 animate-up delay-2 mx-auto" style="max-width: 400px;">
+                    <div class="row g-3">
+                        <div class="col-6 text-start border-end border-secondary">
+                            <small class="text-secondary d-block">REVENUE</small>
+                            <span class="text-white fw-bold" id="chestRevenue">Rp 15.8jt</span>
+                        </div>
+                        <div class="col-6 text-end">
+                            <small class="text-secondary d-block">OXYGEN</small>
+                            <span class="text-cyan fw-bold" id="chestBalance">Rp 785k</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="mt-4 text-white-50 animate-up delay-3 small">
+                    "Kita tidak membakar uang,<br>kita menyalakan masa depan."
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: OUTRO -->
+        <section class="wrapped-slide" id="slide6">
+            <div class="content text-center px-4">
+                <div class="share-card bg-navy p-5 rounded-4 border border-cyan shadow-lg mx-auto animate-up delay-1"
+                    id="shareCard" style="max-width: 360px;">
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-tower-broadcast fa-3x text-cyan mb-3"></i>
+                        <h2 class="fw-bold text-white mb-0">GENZET HOME</h2>
+                        <h2 class="fw-bold text-cyan">IS ONLINE</h2>
+                    </div>
+
+                    <div class="divider my-4 border-top border-secondary opacity-50"></div>
+
+                    <div class="row text-start font-monospace small">
+                        <div class="col-6 mb-2 text-secondary">ACTIVE DAYS</div>
+                        <div class="col-6 mb-2 text-end text-white" id="shareDays">209</div>
+
+                        <div class="col-6 mb-2 text-secondary">THROUGHPUT</div>
+                        <div class="col-6 mb-2 text-end text-white">320 Mbps</div>
+
+                        <div class="col-6 text-secondary">STATUS</div>
+                        <div class="col-6 text-end text-success fw-bold">READY FOR 2026</div>
+                    </div>
+                </div>
+
+                <div class="mt-5 animate-up delay-2">
+                    <button class="btn btn-cyan rounded-pill px-5 py-3 fw-bold text-navy w-100" style="max-width:300px"
+                        onclick="downloadShareCard()">
+                        SHARE SIGNAL <i class="fa-solid fa-share-nodes ms-2"></i>
+                    </button>
+                    <br>
+                    <button class="btn btn-link text-white-50 mt-3 text-decoration-none small"
+                        onclick="location.reload()">Replay Chronicles</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script type="module" src="assets/js/wrapped.js"></script>
+</body>
+
+</html>

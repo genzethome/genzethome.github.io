@@ -36,6 +36,7 @@ class MyNavbar extends HTMLElement {
                 <li class="nav-item"><a href="/pengeluaran.html" class="nav-link text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Pengeluaran"><i class="fa-solid fa-money-bill-wave"></i> <span class="nav-text">Pengeluaran</span></a></li>
                 <li class="nav-item"><a href="/pengeluaran-tetap.html" class="nav-link text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Pengeluaran Tetap"><i class="fa-solid fa-money-check-dollar"></i> <span class="nav-text">Pengeluaran Tetap</span></a></li>
                 <li class="nav-item"><a href="/assets.html" class="nav-link text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Assets"><i class="fa-solid fa-box-archive"></i> <span class="nav-text">Assets</span></a></li>
+                <li class="nav-item"><a href="/wrapped.html" class="nav-link text-dark fw-bold" data-bs-toggle="tooltip" data-bs-placement="bottom" title="2025 Wrapped"><i class="fa-solid fa-gift text-warning"></i> <span class="nav-text">Wrapped</span></a></li>
                 <li class="nav-item"><a href="/form.html" class="nav-link text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Formulir"><i class="fa-solid fa-file-lines"></i> <span class="nav-text">Formulir</span></a></li>
                 <li class="nav-item">
                   <a href="/approval.html" class="nav-link text-dark" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Approval">
