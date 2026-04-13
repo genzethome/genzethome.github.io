@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clone Tema MyRepublic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Warna custom meniru tone MyRepublic
+                        myrep: {
+                            50: '#f5f3fa',
+                            100: '#eae6f4',
+                            500: '#8b3d9c', // Ungu aksen
+                            600: '#6c217e', // Ungu utama (brand)
+                            900: '#3a1045', // Ungu gelap untuk footer/text
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-myrep-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                        M</div>
+                    <span class="font-bold text-xl text-myrep-600 tracking-tight">MyRepublic</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#" class="text-myrep-900 hover:text-myrep-500 px-3 py-2 font-medium transition">Produk</a>
+                    <a href="#" class="text-myrep-900 hover:text-myrep-500 px-3 py-2 font-medium transition">Promo</a>
+                    <a href="#" class="text-myrep-900 hover:text-myrep-500 px-3 py-2 font-medium transition">Bantuan</a>
+                </div>
+                <div>
+                    <a href="#"
+                        class="bg-myrep-600 hover:bg-myrep-500 text-white px-5 py-2 rounded-full font-semibold transition shadow-lg shadow-myrep-500/30">Langganan
+                        Sekarang</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-gradient-to-r from-myrep-900 to-myrep-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 space-y-6">
+                <span
+                    class="bg-white/20 text-white text-sm font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Promo
+                    Spesial</span>
+                <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">
+                    Internet Cepat Tanpa Batas Kuota
+                </h1>
+                <p class="text-lg text-myrep-50 max-w-md">
+                    Nikmati pengalaman streaming dan gaming super lancar dengan koneksi fiber optik terbaik di rumahmu.
+                </p>
+                <div class="pt-4">
+                    <a href="#"
+                        class="bg-white text-myrep-600 hover:bg-gray-100 px-8 py-3 rounded-full font-bold text-lg transition shadow-xl">Cek
+                        Area Jangkauan</a>
+                </div>
+            </div>
+            <div class="md:w-1/2 mt-12 md:mt-0 flex justify-center">
+                <div
+                    class="w-full max-w-md h-64 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-sm flex items-center justify-center p-8 shadow-2xl">
+                    <p class="text-white/70 font-medium text-center">[ Area Gambar / Ilustrasi Banner ]</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-myrep-900">Pilih Paket Sesuai Kebutuhanmu</h2>
+                <p class="mt-4 text-gray-500">Harga transparan, tanpa biaya tersembunyi.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div
+                    class="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl transition-shadow p-8 flex flex-col">
+                    <h3 class="text-xl font-bold text-myrep-600 mb-2">Value</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-extrabold text-gray-900">30</span>
+                        <span class="text-xl font-medium text-gray-500">Mbps</span>
+                    </div>
+                    <ul class="mb-8 space-y-4 flex-1">
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            100% Fiber Optic
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Unlimited Tanpa FUP
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="w-full block text-center border-2 border-myrep-600 text-myrep-600 hover:bg-myrep-600 hover:text-white font-semibold py-3 rounded-xl transition">Pilih
+                        Paket</a>
+                </div>
+
+                <div
+                    class="bg-white border-2 border-myrep-500 rounded-2xl shadow-xl p-8 flex flex-col relative transform md:-translate-y-4">
+                    <div
+                        class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-myrep-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+                        Paling Laris</div>
+                    <h3 class="text-xl font-bold text-myrep-600 mb-2">Fast</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-extrabold text-gray-900">50</span>
+                        <span class="text-xl font-medium text-gray-500">Mbps</span>
+                    </div>
+                    <ul class="mb-8 space-y-4 flex-1">
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            100% Fiber Optic
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Unlimited Tanpa FUP
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Gratis Instalasi
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="w-full block text-center bg-myrep-600 hover:bg-myrep-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-myrep-500/30">Pilih
+                        Paket</a>
+                </div>
+
+                <div
+                    class="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl transition-shadow p-8 flex flex-col">
+                    <h3 class="text-xl font-bold text-myrep-600 mb-2">Gamer</h3>
+                    <div class="flex items-baseline gap-1 mb-6">
+                        <span class="text-4xl font-extrabold text-gray-900">250</span>
+                        <span class="text-xl font-medium text-gray-500">Mbps</span>
+                    </div>
+                    <ul class="mb-8 space-y-4 flex-1">
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            IP Public Dinamis
+                        </li>
+                        <li class="flex items-center text-gray-600">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Routing Spesial Game
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="w-full block text-center border-2 border-myrep-600 text-myrep-600 hover:bg-myrep-600 hover:text-white font-semibold py-3 rounded-xl transition">Pilih
+                        Paket</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-myrep-900 text-myrep-100 py-12 border-t-4 border-myrep-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center gap-2 mb-4">
+                    <div
+                        class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-myrep-900 font-bold text-xl">
+                        M</div>
+                    <span class="font-bold text-xl text-white tracking-tight">MyRepublic</span>
+                </div>
+                <p class="text-sm text-myrep-100/70 max-w-sm">
+                    Internet provider pilihan keluarga dengan kecepatan stabil dan harga terjangkau.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Layanan</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Internet Fiber</a></li>
+                    <li><a href="#" class="hover:text-white transition">TV Kabel</a></li>
+                    <li><a href="#" class="hover:text-white transition">Paket Gamer</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Dukungan</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Pusat Bantuan</a></li>
+                    <li><a href="#" class="hover:text-white transition">Cek Tagihan</a></li>
+                    <li><a href="#" class="hover:text-white transition">Hubungi Kami</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
